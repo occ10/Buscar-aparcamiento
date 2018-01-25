@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">TFG</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password </string>
+    <string name="action_sign_in">"Iniciar sesion"</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_mobile">This mobil is incorrect</string>
+    <string name="error_invalid_age">this age is not permitted</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_maps">Map</string>
+    <string name="hello_world"> hello_world </string>
+    <string name="btn_configurar"> Configurar </string>
+    <string name="btn_acerca_de"> Creca de </string>
+    <string name="buscar"> Buscar </string>
+    <string name="action_register_in"> Registrate </string>
+    <string name="Nombre"> Nombre </string>
+    <string name="Apellido"> Apellido </string>
+    <string name="telefono"> Telefono </string>
+    <string name="phone_hint"> Telefono </string>
+    <string name="age_hint"> Edad </string>
+    <string name="description_hint"> En pocas palabras vivo en torrevieja y trabajo en Alicante, me desplazo todos los dias ... </string>
+    <string name="no_hay_anuncios"> No hay anuncios </string>
+</resources>
