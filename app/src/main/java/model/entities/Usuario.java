@@ -1,9 +1,7 @@
-package com.example.walid.tfg;
+package model.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.Date;
 
 /**
  * Created by walid on 21/01/2018.
@@ -16,8 +14,8 @@ public class Usuario implements Parcelable {
     public static final String APELLIDO = "apellido";
     public static final String PASSWORD = "password";
     public static final Integer EDAD = 0;
-    public static final String TELEFONO = "";
-    public static final String DESCRIPCION = "";
+    public static final String TELEFONO = "telefono";
+    public static final String DESCRIPCION = "descripcion";
 
 
 
@@ -133,4 +131,5 @@ public class Usuario implements Parcelable {
 
 
 }
+
 

@@ -34,25 +34,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import model.Apua;
+import model.entities.Usuario;
+import application.MyAppContext;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -75,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    AsyncTask<Void, Void, Boolean> loadingTask;
     private SharedPreferences prefs;
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -174,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (loadingTask != null) {
             return;
         }
 
@@ -215,13 +204,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+            final Apua apua =  new Apua(this);
+
+                    /*((MyAppContext)getApplicationContext()
+                    .getApplicationContext())
+                    .getApuaInstance();*/
+            if (loadingTask == null) {
+                loadingTask = new LoadingTask(apua,
+                        mEmailView.getText().toString(),
+                        mPasswordView.getText().toString());
+
+                loadingTask.execute();
+            }
+            //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
             //myIntent.putExtra("key", value); //Optional parameters
-            LoginActivity.this.startActivity(myIntent);
+            //LoginActivity.this.startActivity(myIntent);
             /*mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);*/
 
-            String stringUrl = "http://localhost:8080/tfg/rest/UserService/";
+           /* String stringUrl = "http://localhost:8080/tfg/rest/UserService/";
             ConnectivityManager connMgr = (ConnectivityManager)
                     getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -232,7 +233,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
                 //textView.setText("No network connection available.");
                 Log.d("MyApp", "no hay conexion");
-            }
+            }*/
         }
     }
 
@@ -336,6 +337,53 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+
+    public class LoadingTask extends AsyncTask<Void, Void, Boolean> {
+        private Apua apua;
+        public String email;
+        public String password;
+
+        public LoadingTask(Apua apua,String email, String password) {
+            this.apua=apua;
+            this.email = email;
+            this.password = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean success;
+            try {
+                success = apua.serverAgent.loginUsuario(email, password);
+                if (success) {
+                    Usuario usuario = apua.serverAgent.getUser(email);
+                    //runner.logic.usuario.save(usuario);
+                    Log.d("Apua", "Comprobado correctamente ");
+                }
+            } catch (Exception e) {
+                success = false;
+                Log.d("RUNNER", "Error trying to log. ", e);
+            }
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+
+            if (success) {
+                Intent intent = new Intent().setClass(
+                        LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                loadingTask = null;
+                Toast.makeText(LoginActivity.this,
+                        "Login or password are not correct.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -393,175 +441,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }*/
 
-    private class UserLoginTask  extends AsyncTask<String,Void, String> {
-
-        Context context;
-        public UserLoginTask() {
-
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-
-            String pal="";
-            //  ArrayList<Historial> lista_historial = new ArrayList<>();
-
-            //Intent myIntent = new Intent(MainActivity.this, MainActivity2.class);
-            // startActivity(myIntent);
-            try {
-                JSONObject rootObject = new JSONObject(result);
-                //"data":"Login correcto"
-                pal=rootObject.getString("data");
-                Log.d("EL usuario es ",pal);
-                if(pal.equalsIgnoreCase("Login correcto")){
-                    Log.d("EL usuario es ","ha entrado");
-                    prefs = getSharedPreferences("prefName", MODE_PRIVATE);
-                    SharedPreferences preferencias=getSharedPreferences("datos",Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=preferencias.edit();
-                    editor.putString("mail", mEmailView.getText().toString());
-                    editor.putString("password", mPasswordView.getText().toString());
-                    editor.commit();
-                    finish();
-
-
-                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(myIntent);
-                }else{
-
-
-             /*   Context context = getApplicationContext();
-                CharSequence text = "Hello toast!";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();*/
-                }
-                /// Log.d("MyApp", "Data" + pal);
-            } catch (JSONException e) {
-            }
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-
-            try {
-                return downloadUrl(params[0],params[1],params[2]);
-            } catch (IOException e) {
-                return e.getMessage();
-                // return "Unable to retrieve web page. URL may be invalid.";
-            }
-
-
-        }
-
-
-        // Given a URL, establishes an HttpUrlConnection and retrieves
-// the web page content as a InputStream, which it returns as
-// a string.
-        private String downloadUrl(String myurl,String email,String password) throws IOException {
-
-            final String DEBUG_TAG = "HttpExample";
-            InputStream is = null;
-            OutputStream out=null;
-            String data = "";
-            // Only display the first 500 characters of the retrieved
-            // web page content.
-            int len = 500;
-
-            try {
-                URL url = new URL(myurl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                // conn.setReadTimeout(10000 /* milliseconds */);
-                //conn.setConnectTimeout(15000 /* milliseconds */);
-                //conn.setRequestMethod("GET");
-                //conn.setDoInput(true);
-
-                conn.setRequestMethod("POST");
-                conn.setDoOutput(true);
-
-
-                out = new BufferedOutputStream(conn.getOutputStream());
-                // Starts the query
-
-                HashMap<String, String> postDataParams=new HashMap<>();
-                //Log.d("Emailxxxxx", email);
-                postDataParams.put("email", email);
-                postDataParams.put("password", password);
-
-
-
-                String pal=getPostDataString(postDataParams);
-                out.write(pal.getBytes());
-
-                out.flush();
-                out.close();
-                //InputStream in = new BufferedInputStream(conn.getInputStream());
-                int response = conn.getResponseCode();
-                Log.d(DEBUG_TAG, "The response is: " + response);
-
-                is = conn.getInputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-                StringBuffer sb = new StringBuffer();
-
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                data = sb.toString();
-                Log.d("Mydata", data);
-                br.close();
-                // conn.disconnect();
-
-            } finally {
-                if (is != null ) {
-                    is.close();
-                }
-           /* if (out != null ) {
-                out.close();
-            }*/
-
-            }
-
-            return data;
-        }
-
-
-        // Reads an InputStream and converts it to a String.
-        public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-            Reader reader = null;
-            reader = new InputStreamReader(stream, "UTF-8");
-            char[] buffer = new char[len];
-            reader.read(buffer);
-            return new String(buffer);
-        }
-
-        private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-            StringBuilder result = new StringBuilder();
-            boolean first = true;
-            for(Map.Entry<String, String> entry : params.entrySet()){
-                if (first)
-                    first = false;
-                else
-                    result.append("&");
-
-                result.append(entry.getKey());
-                result.append("=");
-                //Log.d("Emailyyyyy",entry.getValue());
-                result.append(entry.getValue());
-            }
-
-
-            return result.toString();
-        }
-
-
-
-    }
 
 }
 
