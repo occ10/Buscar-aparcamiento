@@ -28,4 +28,6 @@
     <string name="age_hint"> Edad </string>
     <string name="description_hint"> En pocas palabras vivo en torrevieja y trabajo en Alicante, me desplazo todos los dias ... </string>
     <string name="no_hay_anuncios"> No hay anuncios </string>
+    <string name="icono">Icono</string>
+    <string name="tamanyo_template">Tamaño: %d</string>
 </resources>

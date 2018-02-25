@@ -21,11 +21,27 @@ public class UsuarioParser implements IParser<Usuario>{
         JSONObject obj = new JSONObject();
         obj.put(EMAIL, model.getEmail());
         obj.put(NOMBRE, model.getNombre());
+        obj.put(APELLIDO, model.getApellido());
+        obj.put(EDAD, model.getEdad());
+        //obj.put(PASSWORD, model.getPassword());
+        obj.put(DESCRIPCION, model.getDescripcion());
+        obj.put(TELEFONO, model.getTelefono());
 
         return obj;
     }
-
-
+    @Override
+    public Usuario getJsonObject(String json) throws JSONException {
+        JSONObject obj = new JSONObject(json);
+        Usuario usuario = new Usuario();
+        usuario.setEmail(obj.getString(EMAIL));
+        usuario.setNombre(obj.getString(NOMBRE));
+        usuario.setApellido(obj.getString(APELLIDO));
+        usuario.setEdad(Integer.valueOf(obj.getString(EDAD)));
+        //usuario.setPassword(obj.getString(PASSWORD));
+        usuario.setDescripcion(obj.getString(DESCRIPCION));
+        usuario.setTelefono(obj.getString(TELEFONO));
+        return usuario;
+    }
 
     @Override
     public String fromModel(Usuario model) throws JSONException {

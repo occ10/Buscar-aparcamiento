@@ -36,12 +36,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Apua;
 import model.entities.Usuario;
 import application.MyAppContext;
+import server.NetworkException;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -342,6 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private Apua apua;
         public String email;
         public String password;
+        Usuario usuario = null;
 
         public LoadingTask(Apua apua,String email, String password) {
             this.apua=apua;
@@ -352,10 +358,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... voids) {
             boolean success;
+
             try {
+
                 success = apua.serverAgent.loginUsuario(email, password);
+
                 if (success) {
-                    Usuario usuario = apua.serverAgent.getUser(email);
+                    usuario = apua.serverAgent.getUser(email);
                     //runner.logic.usuario.save(usuario);
                     Log.d("Apua", "Comprobado correctamente ");
                 }
@@ -371,8 +380,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             super.onPostExecute(success);
 
             if (success) {
+
                 Intent intent = new Intent().setClass(
                         LoginActivity.this, MainActivity.class);
+                intent.putExtra("usuario",usuario);
+                Toast.makeText(LoginActivity.this,
+                        "respuesta de usuario ",
+                        Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 finish();
             } else {

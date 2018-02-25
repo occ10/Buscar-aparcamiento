@@ -9,23 +9,25 @@ import android.os.Parcelable;
 
 public class Usuario implements Parcelable {
 
-    public static final String EMAIL = "email";
+    public static final String EMAIL = "correo";
     public static final String NOMBRE = "nombre";
     public static final String APELLIDO = "apellido";
-    public static final String PASSWORD = "password";
-    public static final Integer EDAD = 0;
+   // public static final String PASSWORD = "password";
+    public static final String EDAD = "edad";
     public static final String TELEFONO = "telefono";
-    public static final String DESCRIPCION = "descripcion";
+    public static final String DESCRIPCION = "detalles";
+    public static final String FOTO = "foto";
 
 
 
     private String email;
     private String nombre;
     private String apellido;
-    private String password;
+   // private String password;
     private int edad;
     private String telefono;
     private String descripcion;
+    private String foto;
 
 
     public Usuario() {
@@ -45,6 +47,14 @@ public class Usuario implements Parcelable {
         this.email = email;
     }
 
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String email) {
+        this.foto = email;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -61,13 +71,13 @@ public class Usuario implements Parcelable {
         this.apellido = apellido;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    //public String getPassword() {
+       // return password;
+    //}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+   // public void setPassword(String password) {
+       // this.password = password;
+    //}
 
     public int getEdad() {
         return edad;
@@ -99,10 +109,11 @@ public class Usuario implements Parcelable {
         dest.writeString(nombre);
         dest.writeString(apellido);
 
-        dest.writeString(password);
+        //dest.writeString(password);
         dest.writeInt(edad);
         dest.writeString(telefono);
         dest.writeString(descripcion);
+        dest.writeString(foto);
     }
 
 
@@ -110,11 +121,12 @@ public class Usuario implements Parcelable {
         email = in.readString();
         nombre = in.readString();
         apellido = in.readString();
-        password = in.readString();
+        //password = in.readString();
         edad = in.readInt();
         telefono = in.readString();
         //  sexo = in.readInt();
         descripcion = in.readString();
+        foto = in.readString();
     }
 
     public static final Parcelable.Creator<Usuario> CREATOR
