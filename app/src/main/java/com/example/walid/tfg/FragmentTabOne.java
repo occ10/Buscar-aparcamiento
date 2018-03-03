@@ -42,16 +42,14 @@ public class FragmentTabOne extends Fragment {
     private List<Ruta> rutasList = new ArrayList<>();
     RecyclerView recycleview;
     private RoutesAdapter routesAdapter;
-    private static final String[] items = {"En", "un", "lugar", "de",
-            "la", "Mancha", "de", "cuyo", "nombre", "no", "quiero",
-            "acordarme", "no", "ha", "mucho", "tiempo", "que",
-            "vivía", "un", "hidalgo", "de", "los", "de", "lanza",
-            "en", "astillero", "adarga", "antigua", "rocín", "flaco",
-            "y", "galgo", "corredor"};
-
+    public static final String RUTA_KEY = "ruta";
+    // Session Manager Class
+    SessionManager session;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Session class instance
+        //session = new SessionManager(getApplicationContext());
         Bundle extras = getActivity().getIntent().getExtras();
         Usuario usuario = extras.getParcelable("usuario");
 
@@ -75,7 +73,7 @@ public class FragmentTabOne extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-        Log.d("rutas tamaño1", rutasList.toString());
+        //Log.d("rutas tamaño1", rutasList.toString());
         routesAdapter = new RoutesAdapter();
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -126,13 +124,10 @@ public class FragmentTabOne extends Fragment {
     public class LoadingTask extends AsyncTask<Void, Void, List<Ruta>> {
         private Apua apua;
         public Usuario usuario;
-        //public String password;
-        //Usuario usuario = null;
 
         public LoadingTask(Apua apua,Usuario usuario) {
             this.apua=apua;
             this.usuario = usuario;
-            //this.password = password;
         }
 
         @Override
@@ -150,7 +145,7 @@ public class FragmentTabOne extends Fragment {
         @Override
         protected void onPostExecute(List<Ruta> rutas) {
                 rutasList = rutas;
-            routesAdapter.notifyDataSetChanged();
+                routesAdapter.notifyDataSetChanged();
         }
     }
 
@@ -167,13 +162,26 @@ public class FragmentTabOne extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
 
-            //holder.mItem = mValues.get(position);
+            holder.ruta = rutasList.get(position);
             holder.nombreUsuario.setText(rutasList.get(position).getUser().getNombre());
             holder.apellidoUsuario.setText(rutasList.get(position).getUser().getApellido());
             holder.edad.setText("Edad: " + Integer.toString(rutasList.get(position).getUser().getEdad()));
-            holder.origen.setText(rutasList.get(position).getOrigen() + " -> Universidad Alicante");
+            holder.origen.setText("Salida: " + rutasList.get(position).getOrigen());
             holder.precioPlaza.setText("Precio: " + String.valueOf(rutasList.get(position).getPrecio()));
             holder.plazasDisponible.setText("Plazas disponibles " +  Integer.toString(rutasList.get(position).getPlazas()- rutasList.get(position).getPlazasOcupadas()));
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        /*session.checkLogin();*/
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, RutaDetailActivity.class);
+                        intent.putExtra(RUTA_KEY, holder.ruta.getId());
+                        context.startActivity(intent);
+
+                }
+            });
         }
 
         @Override
@@ -182,6 +190,7 @@ public class FragmentTabOne extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder{
+            public Ruta ruta;
             public final View mView;
             public final TextView nombreUsuario;
             public final TextView apellidoUsuario;

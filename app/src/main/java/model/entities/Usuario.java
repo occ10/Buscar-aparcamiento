@@ -17,6 +17,7 @@ public class Usuario implements Parcelable {
     public static final String TELEFONO = "telefono";
     public static final String DESCRIPCION = "detalles";
     public static final String FOTO = "foto";
+    public static final String CONFIRMADO = "confirmado";
 
 
 
@@ -28,7 +29,15 @@ public class Usuario implements Parcelable {
     private String telefono;
     private String descripcion;
     private String foto;
+    private String confirmado;
 
+    public String getConfirmado() {
+        return confirmado;
+    }
+
+    public void setConfirmado(String confirmado) {
+        this.confirmado = confirmado;
+    }
 
     public Usuario() {
 
@@ -114,6 +123,7 @@ public class Usuario implements Parcelable {
         dest.writeString(telefono);
         dest.writeString(descripcion);
         dest.writeString(foto);
+        dest.writeString(confirmado);
     }
 
 
@@ -127,6 +137,7 @@ public class Usuario implements Parcelable {
         //  sexo = in.readInt();
         descripcion = in.readString();
         foto = in.readString();
+        confirmado = in.readString();
     }
 
     public static final Parcelable.Creator<Usuario> CREATOR

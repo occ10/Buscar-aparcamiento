@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.entities.Parking;
 import model.entities.Ruta;
 import model.entities.Usuario;
 import model.parsers.*;
@@ -29,7 +30,7 @@ public class ServerAgent {
     public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
     public static final String RUTAS_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routes";
-    //public static final String OPINIONES_PATH = "http://sca.ovh:443/api/opinion/devolverOpinionesRuta?idRuta=";
+    public static final String PARKINGS_PATH = "http://10.0.2.2:8080/tfg/rest/ParkingService/parking";
 
     private Context context;
     private RestHelper restHelper;
@@ -52,12 +53,13 @@ public class ServerAgent {
         return parser.fromJson(httpContent);
     }
 
-    /*public List<Punto> getPuntosFromServer(int id) throws IOException, NetworkException, JSONException {
-        RestResponse response =  getResponseFromServer(PUNTOS_PATH+id);
-        IParser parser = ParserFactory.newInstance().getPuntoParser();
+    public List<Parking> getParkingsFromServer() throws IOException, NetworkException, JSONException {
+        RestResponse response =  getResponseFromServer(PARKINGS_PATH);
+        IParser parser = ParserFactory.newInstance().getParkingParser();
         String httpContent = response.getHttpContent();
+        //Log.d("Parkings result --------------------", httpContent);
         return parser.fromJson(httpContent);
-    }*/
+    }
 
     public Usuario getUser(String email) throws IOException, NetworkException, JSONException {
 

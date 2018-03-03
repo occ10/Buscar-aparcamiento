@@ -16,21 +16,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-       /* mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
-
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab1").setIndicator("Tab 1", null),
-                FragmentTabOne.class, null);
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab2").setIndicator("Tab 2", null),
-                FragmentTabTwo.class, null);
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
-                MapsActivity.class, null);*/
-
         tabHost =
                 (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(),
@@ -39,9 +24,9 @@ public class MainActivity extends FragmentActivity {
         TabHost.TabSpec tab1 = tabHost.newTabSpec("tab1");
         TabHost.TabSpec tab2 = tabHost.newTabSpec("tab2");
         TabHost.TabSpec tab3 = tabHost.newTabSpec("tab3");
-        tab1.setIndicator("tab1", null);
-        tab2.setIndicator("tab2", null);
-        tab3.setIndicator("tab13", null);
+        tab1.setIndicator("Anuncios", null);
+        tab2.setIndicator("Publicar Anuncio", null);
+        tab3.setIndicator("Buscar Parking", null);
         tabHost.addTab(tab1, FragmentTabOne.class, null);
         tabHost.addTab(tab2, FragmentTabTwo.class, null);
         tabHost.addTab(tab3, FragmentTabTree.class, null);

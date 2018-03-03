@@ -76,11 +76,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -348,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         public String email;
         public String password;
         Usuario usuario = null;
+        public boolean exito = false;
 
         public LoadingTask(Apua apua,String email, String password) {
             this.apua=apua;
@@ -365,8 +368,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 if (success) {
                     usuario = apua.serverAgent.getUser(email);
-                    //runner.logic.usuario.save(usuario);
-                    Log.d("Apua", "Comprobado correctamente ");
+                    if (usuario.getConfirmado().equalsIgnoreCase("si")) {
+                        session.createLoginSession(usuario.getNombre(), usuario.getEmail());
+                    Log.d("Apua", "Comprobado correctamente " + usuario.getConfirmado());
+                    } else {
+
+                        Toast.makeText(LoginActivity.this,
+                                "debes confirmar tu registro en el correo enviado ",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (Exception e) {
                 success = false;
@@ -381,14 +391,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
 
-                Intent intent = new Intent().setClass(
-                        LoginActivity.this, MainActivity.class);
-                intent.putExtra("usuario",usuario);
-                Toast.makeText(LoginActivity.this,
-                        "respuesta de usuario ",
-                        Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-                finish();
+                if (usuario.getConfirmado().equalsIgnoreCase("si")) {
+                    Intent intent = new Intent().setClass(
+                            LoginActivity.this, MainActivity.class);
+                    intent.putExtra("usuario", usuario);
+                    Toast.makeText(LoginActivity.this,
+                            "Login correcto ",
+                            Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                    finish();
+                } else {
+
+                    Toast.makeText(LoginActivity.this,
+                            "Debes confirmar tu registro mediante el correo enviado a tu cuenta ",
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent().setClass(
+                            LoginActivity.this, LoginActivity.class);
+                    startActivity(intent);
+               }
             } else {
                 loadingTask = null;
                 Toast.makeText(LoginActivity.this,

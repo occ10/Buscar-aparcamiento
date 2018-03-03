@@ -30,4 +30,5 @@
     <string name="no_hay_anuncios"> No hay anuncios </string>
     <string name="icono">Icono</string>
     <string name="tamanyo_template">Tamaño: %d</string>
+    <string name="title_activity_ruta_detail">RutaDetailActivity</string>
 </resources>

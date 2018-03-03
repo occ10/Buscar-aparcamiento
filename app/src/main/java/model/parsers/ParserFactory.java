@@ -1,5 +1,6 @@
 package model.parsers;
 
+import model.parsers.impl.ParkingParser;
 import model.parsers.impl.RutaParser;
 import model.parsers.impl.UsuarioParser;
 
@@ -17,9 +18,9 @@ public class ParserFactory {
     public IParser getUsuarioParser() {
         return new UsuarioParser();
     }
-   /* public IParser getPuntoParser() {
-        return new PuntoParser();
-    }*/
+    public IParser getParkingParser() {
+        return new ParkingParser();
+    }
    // public IParser getOpinionParser() { return new OpinionParser(); }
 
 

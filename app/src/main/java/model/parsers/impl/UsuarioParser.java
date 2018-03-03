@@ -26,7 +26,7 @@ public class UsuarioParser implements IParser<Usuario>{
         //obj.put(PASSWORD, model.getPassword());
         obj.put(DESCRIPCION, model.getDescripcion());
         obj.put(TELEFONO, model.getTelefono());
-
+        obj.put(CONFIRMADO, model.getConfirmado());
         return obj;
     }
     @Override
@@ -40,6 +40,7 @@ public class UsuarioParser implements IParser<Usuario>{
         //usuario.setPassword(obj.getString(PASSWORD));
         usuario.setDescripcion(obj.getString(DESCRIPCION));
         usuario.setTelefono(obj.getString(TELEFONO));
+        usuario.setConfirmado(obj.getString(CONFIRMADO));
         return usuario;
     }
 
