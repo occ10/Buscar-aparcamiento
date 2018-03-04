@@ -31,4 +31,5 @@
     <string name="icono">Icono</string>
     <string name="tamanyo_template">Tamaño: %d</string>
     <string name="title_activity_ruta_detail">RutaDetailActivity</string>
+    <string name="empty_message">De momento todas las zonas estan ocupadas, vuelve a buscar en otro parking</string>
 </resources>

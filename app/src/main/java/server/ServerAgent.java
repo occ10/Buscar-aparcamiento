@@ -10,6 +10,7 @@ import java.util.Map;
 import model.entities.Parking;
 import model.entities.Ruta;
 import model.entities.Usuario;
+import model.entities.Zona;
 import model.parsers.*;
 
 import android.net.Uri;
@@ -25,7 +26,7 @@ import org.json.JSONObject;
 public class ServerAgent {
 
     public static final String USUARIOS_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/users";
-   // public static final String PUNTOS_PATH = "http://164.132.41.42:443/api/punto/devolverPuntos?idRuta=";
+    public static final String ZONAS_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zonas";
     public static final String LOGIN_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/user";
     public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
@@ -43,13 +44,22 @@ public class ServerAgent {
 
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {
 
-        RestResponse response =  getResponseFromServer(RUTAS_PATH+"/"+usuario.getEmail());
+        RestResponse response =  getResponseFromServer(RUTAS_PATH + "/" + usuario.getEmail());
 
         IParser parser = ParserFactory.newInstance()
                 .getRutaParser();
 
         String httpContent = response.getHttpContent();
         Log.d("Apua jsong", httpContent);
+        return parser.fromJson(httpContent);
+    }
+
+    public List<Zona> getZonesFromServer(String code) throws IOException, NetworkException, JSONException {
+        Log.d("Zonasss path --------------------", ZONAS_PATH + "/" + code);
+        RestResponse response =  getResponseFromServer(ZONAS_PATH + "/" + code);
+        IParser parser = ParserFactory.newInstance().getZonaParser();
+        String httpContent = response.getHttpContent();
+        //Log.d("Parkings result --------------------", ZONAS_PATH + "/" + code);
         return parser.fromJson(httpContent);
     }
 

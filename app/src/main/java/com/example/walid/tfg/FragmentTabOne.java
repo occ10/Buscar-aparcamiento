@@ -118,9 +118,6 @@ public class FragmentTabOne extends Fragment {
         return view;
     }
 
-
-
-
     public class LoadingTask extends AsyncTask<Void, Void, List<Ruta>> {
         private Apua apua;
         public Usuario usuario;

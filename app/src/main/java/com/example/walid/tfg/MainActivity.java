@@ -9,15 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TabHost;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     private FragmentTabHost tabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabHost =
-                (FragmentTabHost) findViewById(android.R.id.tabhost);
+        tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(),
                 android.R.id.tabcontent);
         Resources res = getResources();

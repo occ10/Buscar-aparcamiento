@@ -4,6 +4,7 @@ package com.example.walid.tfg;
  * Created by walid on 20/01/2018.
  */
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,14 +15,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
     private List<Parking> parkingsList = new ArrayList<>();
     ArrayAdapter<SpinnerValue> dataAdapter;
     List<SpinnerValue> values;
+    Spinner spinner;
     public static FragmentTabTree newInstance() {
         FragmentTabTree fragment = new FragmentTabTree();
         return fragment;
@@ -70,19 +71,26 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
             values.add(new SpinnerValue("parking " + (i+1),parkingsList.get(i).getCodigo()));
         }
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
+        spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
         dataAdapter = new ArrayAdapter<SpinnerValue>(getActivity(),android.R.layout.simple_spinner_item, values);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-
+        spinner.setSelected(false);
+        spinner.setSelection(0,true);
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent,
                                                android.view.View v, int position, long id) {
                         SpinnerValue spinnerValue = (SpinnerValue) parent.getSelectedItem();
-                        Log.d("UNIVERSITY", spinnerValue.getValue());
-                        /*lblMensaje.setText("Seleccionado: " +
-                                parent.getItemAtPosition(position));*/
+                        String codeParking = spinnerValue.getValue();
+                        Log.d("idZona", codeParking);
+                        Intent intent = new Intent().setClass(
+                                getActivity(), ZonaActivity.class);
+                        intent.putExtra("idZona", codeParking);
+                        /*Toast.makeText(LoginActivity.this,
+                                "Login correcto ",
+                                Toast.LENGTH_SHORT).show();*/
+                        startActivity(intent);
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
@@ -120,18 +128,19 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
         protected List<Parking> doInBackground(Void... voids) {
             List<Parking> parkings = null;
             try {
-                parkings = apua.serverAgent.getParkingsFromServer();
+                parkingsList = apua.serverAgent.getParkingsFromServer();
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
             }
-            return parkings;
+            return null;
         }
 
         @Override
         protected void onPostExecute(List<Parking> parkings) {
-            parkingsList = parkings;
+            //parkingsList = parkings;
             dataAdapter.notifyDataSetChanged();
+
         }
     }
 
