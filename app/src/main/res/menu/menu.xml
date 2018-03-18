@@ -5,9 +5,18 @@
     tools:context=".MainActivity">
     <item android:id="@+id/config"
         android:title="@string/btn_configurar"
-        android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="95"
-        app:showAsAction="ifRoom">
+        app:showAsAction="never">
+    </item>
+    <item android:id="@+id/config2"
+        android:title="@string/btn_configurar"
+        android:orderInCategory="95"
+        app:showAsAction="never">
+    </item>
+    <item android:id="@+id/config3"
+        android:title="@string/btn_configurar"
+        android:orderInCategory="95"
+        app:showAsAction="never">
     </item>
     <item android:id="@+id/acercaDe"
         android:title="@string/btn_acerca_de"

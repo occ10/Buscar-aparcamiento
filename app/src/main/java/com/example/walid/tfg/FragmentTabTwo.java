@@ -25,8 +25,8 @@ public class FragmentTabTwo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_layout_two, container, false);
-        TextView tv = (TextView) v.findViewById(R.id.text);
-        tv.setText(this.getTag() + " Content 2");
+        //TextView tv = (TextView) v.findViewById(R.id.text);
+        //tv.setText(this.getTag() + " Content 2");
         return v;
     }
 }

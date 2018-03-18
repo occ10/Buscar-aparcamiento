@@ -1,5 +1,7 @@
 package com.example.walid.tfg;
 
+import android.app.ActionBar;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -34,7 +36,7 @@ import model.entities.Zona;
  * Created by walid on 04/03/2018.
  */
 
-public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
 
     private GoogleMap mMap;
     AsyncTask<Void, Void, List<Zona>> loadingTask;
@@ -42,13 +44,14 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
     ArrayAdapter<SpinnerValue> dataAdapter;
     List<SpinnerValue> values;
     Spinner spinner;
+    private Boolean mIsSpinnerFirstCall = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Apua apua = new Apua(this);
         Bundle extras = getIntent().getExtras();
-        String code = extras.getString("idZona");
+        String code = extras.getString("idParking");
 
         Log.d("UNIVERSITY22222", code);
 
@@ -61,6 +64,9 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        //ActionBar actionBar = getActionBar();
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         spinner = (Spinner) findViewById(R.id.parkings_spinner);
         TextView textview = (TextView) findViewById(R.id.parkingMessage);
 
@@ -72,33 +78,18 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 values.add(new SpinnerValue("Zona " + (i + 1), String.valueOf(zonasList.get(i).getId())));
             }
-
-
             dataAdapter = new ArrayAdapter<SpinnerValue>(this, android.R.layout.simple_spinner_item, values);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(dataAdapter);
-            spinner.setSelected(false);
-            spinner.setSelection(0, true);
-            spinner.setOnItemSelectedListener(
-                    new AdapterView.OnItemSelectedListener() {
-                        public void onItemSelected(AdapterView<?> parent,
-                                                   android.view.View v, int position, long id) {
-                            SpinnerValue spinnerValue = (SpinnerValue) parent.getSelectedItem();
-                            Log.d("UNIVERSITY", spinnerValue.getValue());
-
-                        }
-
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
+            //spinner.setSelected(false);
+            //spinner.setSelection(0, true);
+            spinner.setOnItemSelectedListener(this);
         }else{
 
             spinner.setVisibility(View.GONE);
             textview.setText("De momento todas las zonas estan ocupadas, vuelve a buscar en otro parking");
             Toast.makeText(this, "De momento todas las zonas estan ocupadas, vuelve a buscar en otro parking ", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     @Override
@@ -112,13 +103,21 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                //Write your logic here
+                this.finish();
+                return true;
             case R.id.acercaDe:
                 //lanzarAcercaDe();
                 break;
         }
         return true;
     }
-
+    /*@Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -144,6 +143,38 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newLatLng(ua));
             mMap.setMapType(mMap.MAP_TYPE_SATELLITE);
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Zona zona = null;
+        if (!mIsSpinnerFirstCall) {
+            Log.d("mIsSpinnerFirstCall", mIsSpinnerFirstCall.toString());
+            SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
+            String codeZona = spinnerValue.getValue();
+
+            for(int i=0;i<zonasList.size();i++){
+                if(zonasList.get(i).getId() == Integer.valueOf(codeZona)){
+                    zona = zonasList.get(i);
+                   break;
+                }
+            }
+
+            Log.d("idZona", codeZona);
+            Intent intent = new Intent().setClass(
+                    ZonaActivity.this.getBaseContext(), OcuppyZone.class);
+            intent.putExtra("zona", zona);
+                            /*Toast.makeText(LoginActivity.this,
+                                    "Login correcto ",
+                                    Toast.LENGTH_SHORT).show();*/
+            startActivity(intent);
+        }
+        mIsSpinnerFirstCall = false;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     public class LoadingTask extends AsyncTask<Void, Void, List<Zona>> {

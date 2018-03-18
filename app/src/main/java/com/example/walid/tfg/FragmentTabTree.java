@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,14 +25,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import model.Apua;
 import model.entities.Parking;
+import model.entities.Usuario;
+import android.app.ProgressDialog;
 
-public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
+public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
     private GoogleMap mMap;
     private int idRuta;
     private Parking parking;
@@ -39,6 +41,8 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
     ArrayAdapter<SpinnerValue> dataAdapter;
     List<SpinnerValue> values;
     Spinner spinner;
+    private ProgressBar progressBar;
+    private Boolean mIsSpinnerFirstCall = true;
     public static FragmentTabTree newInstance() {
         FragmentTabTree fragment = new FragmentTabTree();
         return fragment;
@@ -47,6 +51,8 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getActivity().getIntent().getExtras();
+        Usuario usuario = extras.getParcelable("usuario");
         final Apua apua =  new Apua(getActivity());
 
         if (loadingTask == null) {
@@ -67,38 +73,46 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback {
         values= new ArrayList<SpinnerValue>();
 
         for (int i=0; i < parkingsList.size(); i++) {
-
             values.add(new SpinnerValue("parking " + (i+1),parkingsList.get(i).getCodigo()));
         }
 
         spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
+
         dataAdapter = new ArrayAdapter<SpinnerValue>(getActivity(),android.R.layout.simple_spinner_item, values);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-        spinner.setSelected(false);
-        spinner.setSelection(0,true);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent,
-                                               android.view.View v, int position, long id) {
-                        SpinnerValue spinnerValue = (SpinnerValue) parent.getSelectedItem();
-                        String codeParking = spinnerValue.getValue();
-                        Log.d("idZona", codeParking);
-                        Intent intent = new Intent().setClass(
-                                getActivity(), ZonaActivity.class);
-                        intent.putExtra("idZona", codeParking);
-                        /*Toast.makeText(LoginActivity.this,
-                                "Login correcto ",
-                                Toast.LENGTH_SHORT).show();*/
-                        startActivity(intent);
-                    }
-
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
-
+       // spinner.setSelected(false);  // must
+        //spinner.setSelection(0,true);  //must
+        spinner.setOnItemSelectedListener(this);
+        //spinner.setSelected(false);
         return view;
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent,
+                               View v, int position, long id) {
+
+        if (!mIsSpinnerFirstCall) {
+            SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
+            String codeParking = spinnerValue.getValue();
+            Log.d("idParking", codeParking);
+
+            //comprobar si el usuario tiene alguna zona ocupada
+            Intent intent = new Intent().setClass(
+                    getActivity(), ZonaActivity.class);
+            intent.putExtra("idParking", codeParking);
+                            /*Toast.makeText(LoginActivity.this,
+                                    "Login correcto ",
+                                    Toast.LENGTH_SHORT).show();*/
+            startActivity(intent);
+        }
+        mIsSpinnerFirstCall = false;
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        //seleccion.setText("");
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

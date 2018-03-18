@@ -405,7 +405,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     Toast.makeText(LoginActivity.this,
                             "Debes confirmar tu registro mediante el correo enviado a tu cuenta ",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_LONG).show();
                     Intent intent = new Intent().setClass(
                             LoginActivity.this, LoginActivity.class);
                     startActivity(intent);

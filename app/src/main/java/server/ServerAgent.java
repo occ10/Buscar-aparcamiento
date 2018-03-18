@@ -32,6 +32,9 @@ public class ServerAgent {
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
     public static final String RUTAS_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routes";
     public static final String PARKINGS_PATH = "http://10.0.2.2:8080/tfg/rest/ParkingService/parking";
+    public static final String ZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zona";
+    public static final String UPDATEZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/updateZone";
+    public static final String DESOCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/desocuppyZone";
 
     private Context context;
     private RestHelper restHelper;
@@ -45,10 +48,8 @@ public class ServerAgent {
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {
 
         RestResponse response =  getResponseFromServer(RUTAS_PATH + "/" + usuario.getEmail());
-
         IParser parser = ParserFactory.newInstance()
                 .getRutaParser();
-
         String httpContent = response.getHttpContent();
         Log.d("Apua jsong", httpContent);
         return parser.fromJson(httpContent);
@@ -63,31 +64,90 @@ public class ServerAgent {
         return parser.fromJson(httpContent);
     }
 
+    public Zona getZoneFromServer(String code) throws IOException, NetworkException, JSONException {
+        RestResponse response =  getResponseFromServer(ZONA_PATH + "/" + code);
+        IParser parser = ParserFactory.newInstance().getZonaParser();
+        String httpContent = response.getHttpContent();
+        Log.d("Zona result --------------------", httpContent);
+        return (Zona) parser.getJsonObject(httpContent);
+    }
+
+    public boolean updateZoneFromServer(int code) throws IOException, NetworkException, JSONException {
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", code);
+        }catch(JSONException e){
+
+        }
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-type", "application/json");
+
+        RestResponse response = restHelper.put(context, UPDATEZONA_PATH, headers, json.toString());
+        //Log.d("Apua jsong", json.toString());
+        if (response.getHttpResponseCode() == 401) {
+            return false;
+        } else  if (response.getHttpResponseCode() != 200) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        return true;
+    }
+
+    public boolean desocuppyZoneFromServer(int code) throws IOException, NetworkException, JSONException {
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", code);
+        }catch(JSONException e){
+
+        }
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-type", "application/json");
+
+        RestResponse response = restHelper.put(context, DESOCUPPYZONA_PATH, headers, json.toString());
+        //Log.d("Apua jsong", json.toString());
+        if (response.getHttpResponseCode() == 401) {
+            return false;
+        } else  if (response.getHttpResponseCode() != 200) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        return true;
+    }
+
     public List<Parking> getParkingsFromServer() throws IOException, NetworkException, JSONException {
         RestResponse response =  getResponseFromServer(PARKINGS_PATH);
         IParser parser = ParserFactory.newInstance().getParkingParser();
         String httpContent = response.getHttpContent();
         //Log.d("Parkings result --------------------", httpContent);
         return parser.fromJson(httpContent);
+
     }
 
     public Usuario getUser(String email) throws IOException, NetworkException, JSONException {
 
-
         Usuario usuario = new Usuario();
-
         RestResponse response = restHelper.get(context, USUARIO_PATH+"/"+email, null);
-
-
         Log.d("Apua jsong", USUARIO_PATH);
 
-             if (response.getHttpResponseCode() != 200) {
-                throw new NetworkException(new StringBuilder()
-                    .append("HttpCode: ")
-                    .append(response.getHttpResponseCode())
-                    .append(" - ")
-                    .append(response.getHttpContent())
-                    .toString());
+        if (response.getHttpResponseCode() != 200) {
+            throw new NetworkException(new StringBuilder()
+                .append("HttpCode: ")
+                .append(response.getHttpResponseCode())
+                .append(" - ")
+                .append(response.getHttpContent())
+                .toString());
         }
         IParser parser = ParserFactory.newInstance()
                 .getUsuarioParser();

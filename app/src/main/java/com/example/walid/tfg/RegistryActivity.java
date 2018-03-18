@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -89,6 +90,7 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registry);
+        getSupportActionBar().setHomeButtonEnabled(true);
         // Set up the login form.
         nombre = (AutoCompleteTextView) findViewById(R.id.nombre);
         apellido = (AutoCompleteTextView) findViewById(R.id.apellido);
@@ -390,6 +392,16 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
         int IS_PRIMARY = 1;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //Write your logic here
+                this.finish();
+                return true;
+        }
+        return true;
+    }
     public class LoadingTask extends AsyncTask<Void, Void, Boolean> {
         private Apua apua;
         String nombre;
