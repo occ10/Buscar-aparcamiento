@@ -57,7 +57,6 @@ public class ZonaParser implements IParser<Zona>{
             zona.setAparcamiento(nuevo.getString(APARCAMIENTO));
             zona.setOcupada(nuevo.getInt(OCUPADA));
 
-
             zonas.add(zona);
             //Log.d("rutassssssssss tamaño",rutas.get(i).getOrigen() +" "+ rutas.get(i).getUser().getEmail() +" "+ rutas.get(i).getDetalles());
         }
@@ -69,13 +68,11 @@ public class ZonaParser implements IParser<Zona>{
     public Zona getJsonObject(String json) throws JSONException {
         JSONObject obj = new JSONObject(json);
         Zona zona = new Zona();
-
         zona.setId(obj.getInt(ID));
         zona.setLon(obj.getDouble(LON));
         zona.setLat(obj.getDouble(LAT));
         zona.setAparcamiento(obj.getString(APARCAMIENTO));
         zona.setOcupada(obj.getInt(OCUPADA));
-
 
         return zona;
     }

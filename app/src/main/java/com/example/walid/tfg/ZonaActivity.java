@@ -92,6 +92,7 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu;
@@ -107,9 +108,9 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //Write your logic here
                 this.finish();
                 return true;
-            case R.id.acercaDe:
+            /*case R.id.acercaDe:
                 //lanzarAcercaDe();
-                break;
+                break;*/
         }
         return true;
     }
@@ -149,6 +150,8 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Zona zona = null;
         if (!mIsSpinnerFirstCall) {
+
+
             Log.d("mIsSpinnerFirstCall", mIsSpinnerFirstCall.toString());
             SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
             String codeZona = spinnerValue.getValue();
@@ -164,10 +167,12 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
             Intent intent = new Intent().setClass(
                     ZonaActivity.this.getBaseContext(), OcuppyZone.class);
             intent.putExtra("zona", zona);
+            intent.putExtra("desocuppy", false);
                             /*Toast.makeText(LoginActivity.this,
                                     "Login correcto ",
                                     Toast.LENGTH_SHORT).show();*/
             startActivity(intent);
+            finish();
         }
         mIsSpinnerFirstCall = false;
     }
@@ -191,7 +196,7 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
             List<Zona> parkings = null;
             try {
                 zonasList = apua.serverAgent.getZonesFromServer(code);
-
+                Log.d("zonasList", String.valueOf(zonasList.size()));
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
             }

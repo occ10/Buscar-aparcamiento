@@ -7,6 +7,7 @@ package com.example.walid.tfg;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,19 +31,23 @@ import java.util.List;
 import model.Apua;
 import model.entities.Parking;
 import model.entities.Usuario;
+import model.entities.Zona;
+
 import android.app.ProgressDialog;
 
 public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
     private GoogleMap mMap;
     private int idRuta;
     private Parking parking;
-    AsyncTask<Void, Void, List<Parking> >loadingTask;
+    AsyncTask<Void, Void, Zona >loadingTask;
     private List<Parking> parkingsList = new ArrayList<>();
     ArrayAdapter<SpinnerValue> dataAdapter;
     List<SpinnerValue> values;
     Spinner spinner;
     private ProgressBar progressBar;
     private Boolean mIsSpinnerFirstCall = true;
+    Usuario usuario = null;
+    Zona zone = null;
     public static FragmentTabTree newInstance() {
         FragmentTabTree fragment = new FragmentTabTree();
         return fragment;
@@ -52,7 +57,7 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getActivity().getIntent().getExtras();
-        Usuario usuario = extras.getParcelable("usuario");
+        usuario = extras.getParcelable("usuario");
         final Apua apua =  new Apua(getActivity());
 
         if (loadingTask == null) {
@@ -66,22 +71,21 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout_tree, container, false);
+
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
         values= new ArrayList<SpinnerValue>();
 
         for (int i=0; i < parkingsList.size(); i++) {
             values.add(new SpinnerValue("parking " + (i+1),parkingsList.get(i).getCodigo()));
         }
-
-        spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
-
         dataAdapter = new ArrayAdapter<SpinnerValue>(getActivity(),android.R.layout.simple_spinner_item, values);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-       // spinner.setSelected(false);  // must
+        // spinner.setSelected(false);  // must
         //spinner.setSelection(0,true);  //must
         spinner.setOnItemSelectedListener(this);
         //spinner.setSelected(false);
@@ -91,22 +95,33 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     @Override
     public void onItemSelected(AdapterView<?> parent,
                                View v, int position, long id) {
-
+        Log.d("spinner position", String.valueOf(position));
+        //Log.d("zona aparcamiento", zone.getAparcamiento());
         if (!mIsSpinnerFirstCall) {
-            SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
-            String codeParking = spinnerValue.getValue();
-            Log.d("idParking", codeParking);
+            //Log.d("zona aparcamiento", zone.getAparcamiento());
+            if(zone == null) {
+                Log.d("spinner position", String.valueOf(position));
+                SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
+                String codeParking = spinnerValue.getValue();
+                Log.d("idParking", codeParking);
 
-            //comprobar si el usuario tiene alguna zona ocupada
-            Intent intent = new Intent().setClass(
-                    getActivity(), ZonaActivity.class);
-            intent.putExtra("idParking", codeParking);
+                //comprobar si el usuario tiene alguna zona ocupada
+                Intent intent = new Intent().setClass(
+                        getActivity(), ZonaActivity.class);
+                intent.putExtra("idParking", codeParking);
                             /*Toast.makeText(LoginActivity.this,
                                     "Login correcto ",
                                     Toast.LENGTH_SHORT).show();*/
-            startActivity(intent);
-        }
-        mIsSpinnerFirstCall = false;
+                startActivity(intent);
+            }else{
+                Intent intent = new Intent().setClass(
+                        getActivity(), OcuppyZone.class);
+                intent.putExtra("zona", zone);
+                intent.putExtra("desocuppy", true);
+                startActivity(intent);
+            }
+        }else
+            mIsSpinnerFirstCall = false;
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
@@ -131,7 +146,7 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
         }
     }
 
-    public class LoadingTask extends AsyncTask<Void, Void, List<Parking>> {
+    public class LoadingTask extends AsyncTask<Void, Void, Zona> {
         private Apua apua;
 
         public LoadingTask(Apua apua) {
@@ -139,20 +154,24 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
         }
 
         @Override
-        protected List<Parking> doInBackground(Void... voids) {
+        protected Zona doInBackground(Void... voids) {
             List<Parking> parkings = null;
+            Zona zona = null;
             try {
                 parkingsList = apua.serverAgent.getParkingsFromServer();
+                zone = apua.serverAgent.userOcuppyZone(usuario.getEmail());
+                Log.d("zona aparcamiento", zone.getAparcamiento());
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
             }
-            return null;
+            return zona;
         }
 
         @Override
-        protected void onPostExecute(List<Parking> parkings) {
+        protected void onPostExecute(Zona zona) {
             //parkingsList = parkings;
+            loadingTask = null;
             dataAdapter.notifyDataSetChanged();
 
         }

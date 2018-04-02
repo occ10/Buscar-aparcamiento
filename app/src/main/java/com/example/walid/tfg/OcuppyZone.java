@@ -45,11 +45,12 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         final Apua apua = new Apua(this);
         Bundle extras = getIntent().getExtras();
         zona = extras.getParcelable("zona");
+        boolean desocuppy = extras.getBoolean("desocuppy");
         /*String code = extras.getString("idZona");
         Log.d("UNIVERSITY22222", code);*/
 
         if (loadingTask == null) {
-            loadingTask = new LoadingTask(apua,zona.getId(),true);
+            loadingTask = new LoadingTask(apua,zona.getId(),true, desocuppy);
             loadingTask.execute();
         }
 
@@ -65,26 +66,13 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         emtpyZone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            loadingTask = new LoadingTask(apua,zona.getId(),false, false);
+            loadingTask.execute();
+            finish();
 
-                //if (loadingTask == null) {
-                    loadingTask = new LoadingTask(apua,zona.getId(),false);
-                    loadingTask.execute();
-                //}
-                finish();
-                /*Intent intent = new Intent().setClass(
-                        OcuppyZone.this, MainActivity.class);
-                startActivity(intent);*/
-               // setResult(Activity.RESULT_CANCELED);
-                //finish(); // close this activity and return to preview activit
-
-                /*Fragment fragment= new FragmentTabTree();
-                getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.tabcontent, fragment) // fragment container id in first parameter is the  container(Main layout id) of Activity
-                .addToBackStack(null)  // this will manage backstack
-                .commit();*/
             }
         });
-        //spinner.setVisibility(View.GONE);
+
             textview.setText("Info! Debes desocupar la zona ocupada y luego puedes volver a aparcar.");
     }
 
@@ -103,9 +91,9 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
                 //Write your logic here
                 this.finish();
                 return true;
-            case R.id.acercaDe:
+            /*case R.id.acercaDe:
                 //lanzarAcercaDe();
-                break;
+                break;*/
         }
         return true;
     }
@@ -138,29 +126,33 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         private Apua apua;
         private int code;
         private boolean excute;
+        private boolean desocuppy;
 
-        public LoadingTask(Apua apua, int code,boolean excute) {
+        public LoadingTask(Apua apua, int code,boolean excute, boolean desocuppy) {
             this.apua = apua;
             this.code = code;
             this.excute = excute;
+            this.desocuppy = desocuppy;
+
         }
 
         @Override
         protected Zona doInBackground(Void... voids) {
             //Zona zona = null;
             try {
-
-
-                if(excute)
+                if(excute && !desocuppy)
                     apua.serverAgent.updateZoneFromServer(code);
                    // zona = apua.serverAgent.getZoneFromServer("55");
-                else {
+                else if(!desocuppy){
                     boolean result = apua.serverAgent.desocuppyZoneFromServer(code);
-                    if(result)
+                    if (result) {
+                        /*Intent intent = new Intent().setClass(OcuppyZone.this, OcuppyZone.class);
+                        startActivity(intent);*/
                         Toast.makeText(OcuppyZone.this,
-                                "Se ha desocupado la zona correctamente ",
-                                Toast.LENGTH_SHORT).show();
-                    else {
+                            "Se ha desocupado la zona correctamente ",
+                            Toast.LENGTH_LONG).show();
+                        finish();
+                    }else {
                         Toast.makeText(OcuppyZone.this,
                                 "Ha habido un error en el servidor intentalo mas tarde ",
                                 Toast.LENGTH_SHORT).show();

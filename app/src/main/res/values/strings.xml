@@ -7,6 +7,12 @@
     <string name="action_sign_in">"Iniciar sesion"</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_origin">This origin is invalid</string>
+    <string name="error_invalid_price">This price is invalid</string>
+    <string name="error_invalid_place">This number of place is incorrect</string>
+    <string name="error_invalid_detallesRuta">This details is invalid</string>
+
+
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_invalid_mobile">This mobil is incorrect</string>
@@ -37,4 +43,7 @@
     <string name="precio">Precio</string>
     <string name="plazas">Plazas disponibles</string>
     <string name="detalles">Ejemplo: voy a la universidad de Alicante todos los dias, salgo de Torrevieja, tengo clases por las mañanas</string>
+    <string name="buscarAnuncios">Ejemplo: Elche</string>
+    <string name="title_activity_insert">Sign in</string>
+
 </resources>

@@ -82,9 +82,6 @@ public class FragmentTabOne extends Fragment {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(routesAdapter);
         }
-
-
-
        /* listView = (ListView ) v.findViewById(R.id.list);
 
         TextView textview = (TextView ) v.findViewById(R.id.empty);
@@ -208,8 +205,6 @@ public class FragmentTabOne extends Fragment {
                 plazasDisponible = (TextView) view.findViewById(R.id.plazasDisponible);
 
             }
-
-
         }
     }
 

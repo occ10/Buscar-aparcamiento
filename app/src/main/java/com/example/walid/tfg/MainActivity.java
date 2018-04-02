@@ -1,5 +1,6 @@
 package com.example.walid.tfg;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -49,8 +50,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.acercaDe:
-                //lanzarAcercaDe();
+            case R.id.menu_buscar:
+                Intent intent = new Intent().setClass(
+                        MainActivity.this, SearchAnounce.class);
+                startActivity(intent);
                 break;
         }
         return true;
