@@ -38,7 +38,6 @@ public class RestHelper {
         if (!checkConnectivity(context)) {
             throw new NetworkException(ERR_CONN_MSG);
         }
-
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = getConnection(url, "POST", headers);
@@ -52,50 +51,7 @@ public class RestHelper {
             }
         }
     }
-   /* public RestResponse getUserByMail(Context context, String url, Map<String, String> headers,String body)
-            throws IOException, NetworkException {
 
-        if (!checkConnectivity(context)) {
-            throw new NetworkException(ERR_CONN_MSG);
-        }
-
-        HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = getConnection(url, "GET", headers);
-            Log.d("url conection to string","1");
-            //writePostDataParameters(urlConnection, body);
-            Log.d("url conection to string","2");
-            RestResponse response = connect(urlConnection);
-            Log.d("url conection to string",response.getHttpContent());
-            return response;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
-    }*/
-    public RestResponse SetUser(Context context, String url, Map<String, String> headers,String body)
-            throws IOException, NetworkException {
-
-        if (!checkConnectivity(context)) {
-            throw new NetworkException(ERR_CONN_MSG);
-        }
-        Log.d("url",url);
-        HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = getConnection(url, "POST", headers);
-            //Log.d("servidor",urlConnection.getContentType());
-            //Log.d("cliente",urlConnection.getRequestProperty("Content-Type"));
-            writePostData(urlConnection, body);
-            RestResponse response = connectCreated(urlConnection);
-            Log.d("response",String.valueOf(response.getHttpResponseCode()));
-            return response;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
-    }
 
     public RestResponse get(Context context, String url, Map<String, String> headers)
             throws IOException, NetworkException {
@@ -128,7 +84,7 @@ public class RestHelper {
         try {
             urlConnection = getConnection(url, "POST", headers);
             writePostData(urlConnection, body);
-            RestResponse response = connect(urlConnection);
+            RestResponse response = connectCreated(urlConnection);
             Log.d("response",String.valueOf(response.getHttpResponseCode()) + " " + String.valueOf(response.getHttpResponseCode()));
             return response;
         } finally {
@@ -139,7 +95,7 @@ public class RestHelper {
     }
 
     //http://localhost:8080/tfg/rest/UserService/userByMail/kkk@kkk
-    public RestResponse check(Context context, String url, Map<String, String> headers, String body)
+    /*public RestResponse check(Context context, String url, Map<String, String> headers, String body)
             throws IOException, NetworkException {
 
         if (!checkConnectivity(context)) {
@@ -158,7 +114,7 @@ public class RestHelper {
                 urlConnection.disconnect();
             }
         }
-    }
+    }*/
     public RestResponse put(Context context, String url, Map<String, String> headers, String body)
             throws IOException, NetworkException {
 
@@ -170,7 +126,7 @@ public class RestHelper {
         try {
             urlConnection = getConnection(url, "PUT", headers);
             writePostData(urlConnection, body);
-            RestResponse response = checkResult(urlConnection);
+            RestResponse response = connect(urlConnection);
             return response;
         } finally {
             if (urlConnection != null) {
@@ -189,7 +145,7 @@ public class RestHelper {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = getConnection(url, "DELETE", headers);
-            RestResponse response = connect(urlConnection);
+            RestResponse response = connectCreated(urlConnection);
             return response;
         } finally {
             if (urlConnection != null) {
@@ -227,7 +183,7 @@ public class RestHelper {
     }
 
 
-    private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
+   /*private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
         InputStream is = null;
         try {
             int code = urlConnection.getResponseCode();
@@ -242,17 +198,20 @@ public class RestHelper {
                 is.close();
             }
         }
-    }
+    }*/
 
-    private RestResponse checkResult(HttpURLConnection urlConnection) throws IOException {
+    private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
         InputStream is = null;
-        String response = null;
+        String response;
         try {
             int code = urlConnection.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {
                 is = urlConnection.getInputStream();
                 response = readStringFromStream(is);
-            } else if (code == HttpURLConnection.HTTP_INTERNAL_ERROR){
+            } else if (code == HttpURLConnection.HTTP_NO_CONTENT) {
+                response = null;
+            }else{
+                Log.d("NOT_FOUND","NOT_FOUND");
                 is = urlConnection.getErrorStream();
                 response = readStringFromStream(is);
             }

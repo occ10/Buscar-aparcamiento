@@ -36,7 +36,7 @@ import model.entities.Zona;
 public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    AsyncTask<Void, Void, Zona> loadingTask;
+    AsyncTask<Void, Void, Boolean> loadingTask;
     Zona zona = null;
 
     @Override
@@ -49,7 +49,7 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         /*String code = extras.getString("idZona");
         Log.d("UNIVERSITY22222", code);*/
 
-        if (loadingTask == null) {
+        if (loadingTask == null && !desocuppy) {
             loadingTask = new LoadingTask(apua,zona.getId(),true, desocuppy);
             loadingTask.execute();
         }
@@ -90,6 +90,12 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
             case android.R.id.home:
                 //Write your logic here
                 this.finish();
+                /*FragmentTabTree fragment = (FragmentTabTree)
+                        getFragmentManager().findFragmentById(R.id.your_fragment_container_id);
+                        getFragmentManager().beginTransaction()
+                        .detach(fragment)
+                        .attach(fragment)
+                        .commit();*/
                 return true;
             /*case R.id.acercaDe:
                 //lanzarAcercaDe();
@@ -122,7 +128,7 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         finish();
         return true;
     }
-    public class LoadingTask extends AsyncTask<Void, Void, Zona> {
+    public class LoadingTask extends AsyncTask<Void, Void, Boolean> {
         private Apua apua;
         private int code;
         private boolean excute;
@@ -137,39 +143,37 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
         }
 
         @Override
-        protected Zona doInBackground(Void... voids) {
-            //Zona zona = null;
+        protected Boolean doInBackground(Void... voids) {
+            boolean result = false;
             try {
                 if(excute && !desocuppy)
-                    apua.serverAgent.updateZoneFromServer(code);
+                    result = apua.serverAgent.updateZoneFromServer(code);
                    // zona = apua.serverAgent.getZoneFromServer("55");
                 else if(!desocuppy){
-                    boolean result = apua.serverAgent.desocuppyZoneFromServer(code);
-                    if (result) {
-                        /*Intent intent = new Intent().setClass(OcuppyZone.this, OcuppyZone.class);
-                        startActivity(intent);*/
-                        Toast.makeText(OcuppyZone.this,
-                            "Se ha desocupado la zona correctamente ",
-                            Toast.LENGTH_LONG).show();
-                        finish();
-                    }else {
-                        Toast.makeText(OcuppyZone.this,
-                                "Ha habido un error en el servidor intentalo mas tarde ",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                     result = apua.serverAgent.desocuppyZoneFromServer(code);
+                     finish();
                 }
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to acces parking. ", e);
             }
-            return zona;
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Zona zona) {
+        protected void onPostExecute(Boolean result) {
             //parkingsList = parkings;
             //dataAdapter.notifyDataSetChanged();
 
+            if (result) {
+                //incluir progresBar
+                //Intent intent = new Intent().setClass(OcuppyZone.this, OcuppyZone.class);
+                //startActivity(intent);
+                Toast.makeText(OcuppyZone.this, "La operacion se ha realizado correctamente", Toast.LENGTH_LONG).show();
+                //finish();
+            }else {
+                Toast.makeText(OcuppyZone.this, "Ha habido un error en el servidor intentalo mas tarde ", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

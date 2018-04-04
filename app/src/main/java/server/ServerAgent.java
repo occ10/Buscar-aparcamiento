@@ -102,7 +102,8 @@ public class ServerAgent {
         IParser parser = ParserFactory.newInstance().getZonaParser();
         String httpContent = response.getHttpContent();
         Log.d("Zona result --------------------", httpContent);
-        return (Zona) parser.getJsonObject(httpContent);
+
+        return httpContent != null ? (Zona) parser.getJsonObject(httpContent) : null;
     }
 
     public boolean updateZoneFromServer(int code) throws IOException, NetworkException, JSONException {
@@ -118,10 +119,7 @@ public class ServerAgent {
         headers.put("Content-type", "application/json");
 
         RestResponse response = restHelper.put(context, UPDATEZONA_PATH, headers, json.toString());
-        //Log.d("Apua jsong", json.toString());
-        if (response.getHttpResponseCode() == 401) {
-            return false;
-        } else  if (response.getHttpResponseCode() != 200) {
+        if (response.getHttpResponseCode() != 204) {
             throw new NetworkException(new StringBuilder()
                     .append("HttpCode: ")
                     .append(response.getHttpResponseCode())
@@ -159,27 +157,10 @@ public class ServerAgent {
 
     public Zona userOcuppyZone(String email) throws IOException, NetworkException, JSONException {
 
+        RestResponse response =  getResponseFromServer(USEROCUPPYZONA_PATH + "/" + email);
         IParser parser = ParserFactory.newInstance().getZonaParser();
-        JSONObject json = new JSONObject();
-        try {
-            json.put("correo", email);
-        }catch(JSONException e){
-
-        }
-
-        Map<String, String> headers= new HashMap<String, String>();
-        headers.put("Accept", "application/json");
-        headers.put("Content-type", "application/json");
-
-        RestResponse response = restHelper.check(context, USEROCUPPYZONA_PATH, headers, json.toString());
-        //Log.d("Apua jsong", json.toString());
-        if (response.getHttpResponseCode() == 200) {
-            String httpContent = response.getHttpContent();
-            Log.d("Zona result --------------------", httpContent);
-            return (Zona) parser.getJsonObject(httpContent);
-        } else  if (response.getHttpResponseCode() == 204) {
-            return null;
-        }else{
+        String httpContent = response.getHttpContent();
+        if (response.getHttpResponseCode() != 200 && response.getHttpResponseCode() != 404) {
             throw new NetworkException(new StringBuilder()
                     .append("HttpCode: ")
                     .append(response.getHttpResponseCode())
@@ -187,6 +168,8 @@ public class ServerAgent {
                     .append(response.getHttpContent())
                     .toString());
         }
+        return response.getHttpResponseCode() == 200 ? (Zona) parser.getJsonObject(httpContent) : null;
+
     }
 
     public List<Parking> getParkingsFromServer() throws IOException, NetworkException, JSONException {
@@ -251,6 +234,7 @@ public class ServerAgent {
         RestResponse response = restHelper.getUser(context, LOGIN_PATH, headers, json.toString());
         //Log.d("Apua jsong", json.toString());
         if (response.getHttpResponseCode() == 401) {
+            Log.d("Codigo Error :","401");
             return false;
         } else  if (response.getHttpResponseCode() != 200) {
             throw new NetworkException(new StringBuilder()
@@ -265,7 +249,7 @@ public class ServerAgent {
 
     public RestResponse getResponseFromServer(String path) throws IOException, NetworkException {
         RestResponse response = restHelper.get(context, path, null);
-        if (response.getHttpResponseCode() != 200) {
+        if (response.getHttpResponseCode() != 200 && response.getHttpResponseCode() != 404) {
             throw new NetworkException(new StringBuilder()
                     .append("HttpCode: ")
                     .append(response.getHttpResponseCode())
@@ -301,11 +285,8 @@ public class ServerAgent {
         headers.put("Accept", "application/json");
         headers.put("Content-type", "application/json");
 
-        RestResponse response = restHelper.SetUser(context, REGISTER_PATH, headers, json.toString());
-        //Log.d("Apua jsong", json.toString());
-        if (response.getHttpResponseCode() == 401) {
-            return false;
-        } else  if (response.getHttpResponseCode() != 201) {
+        RestResponse response = restHelper.post(context, REGISTER_PATH, headers, json.toString());
+        if (response.getHttpResponseCode() != 201) {
             throw new NetworkException(new StringBuilder()
                     .append("HttpCode: ")
                     .append(response.getHttpResponseCode())

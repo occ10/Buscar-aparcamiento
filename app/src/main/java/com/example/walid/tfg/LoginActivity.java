@@ -374,7 +374,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 if (success) {
                     usuario = apua.serverAgent.getUser(email);
-                    if (usuario.getConfirmado().equalsIgnoreCase("si")) {
+                    /*if (usuario.getConfirmado().equalsIgnoreCase("si")) {
                         session.createLoginSession(usuario.getNombre(), usuario.getEmail());
                     Log.d("Apua", "Comprobado correctamente " + usuario.getConfirmado());
                     } else {
@@ -382,11 +382,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Toast.makeText(LoginActivity.this,
                                 "debes confirmar tu registro en el correo enviado ",
                                 Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }
             } catch (Exception e) {
                 success = false;
-                Log.d("RUNNER", "Error trying to log. ", e);
+                Log.d("APPUA", "Error trying to log. ", e);
             }
             return success;
         }
@@ -407,19 +407,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     startActivity(intent);
                     finish();
                 } else {
-
+                    showProgress(false);
                     Toast.makeText(LoginActivity.this,
                             "Debes confirmar tu registro mediante el correo enviado a tu cuenta ",
                             Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent().setClass(
-                            LoginActivity.this, LoginActivity.class);
-                    startActivity(intent);
                }
             } else {
                 loadingTask = null;
-                Intent intent = new Intent().setClass(
-                        LoginActivity.this, LoginActivity.class);
-                startActivity(intent);
+                showProgress(false);
                 Toast.makeText(LoginActivity.this,
                         "Login or password are not correct.",
                         Toast.LENGTH_LONG).show();

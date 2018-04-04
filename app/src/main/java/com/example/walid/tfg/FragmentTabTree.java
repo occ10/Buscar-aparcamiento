@@ -128,7 +128,11 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
         //seleccion.setText("");
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        //dataAdapter.notifyDataSetChanged();
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -160,7 +164,7 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
             try {
                 parkingsList = apua.serverAgent.getParkingsFromServer();
                 zone = apua.serverAgent.userOcuppyZone(usuario.getEmail());
-                Log.d("zona aparcamiento", zone.getAparcamiento());
+                //Log.d("zona aparcamiento", zone.getAparcamiento());
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
