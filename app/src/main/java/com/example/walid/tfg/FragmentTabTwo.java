@@ -156,6 +156,14 @@ public class FragmentTabTwo extends Fragment {
         //}
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        origen.setError(null);
+        precio.setError(null);
+        plazas.setError(null);
+        detallesRuta.setError(null);
+    }
     /**
      * Shows the progress UI and hides the login form.
      */

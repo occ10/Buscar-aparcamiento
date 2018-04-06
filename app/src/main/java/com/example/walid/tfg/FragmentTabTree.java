@@ -35,7 +35,7 @@ import model.entities.Zona;
 
 import android.app.ProgressDialog;
 
-public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
+public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener,View.OnTouchListener {
     private GoogleMap mMap;
     private int idRuta;
     private Parking parking;
@@ -45,20 +45,25 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     List<SpinnerValue> values;
     Spinner spinner;
     private ProgressBar progressBar;
-    private Boolean mIsSpinnerFirstCall = true;
+    private Boolean mIsSpinnerFirstCall = false;
+    private Boolean onresumeFirstCall = false;
+    private int check = 0;
+
     Usuario usuario = null;
     Zona zone = null;
+    private Apua apua = null;
     public static FragmentTabTree newInstance() {
         FragmentTabTree fragment = new FragmentTabTree();
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getActivity().getIntent().getExtras();
         usuario = extras.getParcelable("usuario");
-        final Apua apua =  new Apua(getActivity());
+        apua =  new Apua(getActivity());
 
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua);
@@ -78,15 +83,16 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
 
         spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
         values= new ArrayList<SpinnerValue>();
-
+        //values.add(new SpinnerValue("Select value",null));
         for (int i=0; i < parkingsList.size(); i++) {
             values.add(new SpinnerValue("parking " + (i+1),parkingsList.get(i).getCodigo()));
         }
         dataAdapter = new ArrayAdapter<SpinnerValue>(getActivity(),android.R.layout.simple_spinner_item, values);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-        // spinner.setSelected(false);  // must
+        //spinner.setSelected(false);  // must
         //spinner.setSelection(0,true);  //must
+        spinner.setOnTouchListener(this);
         spinner.setOnItemSelectedListener(this);
         //spinner.setSelected(false);
         return view;
@@ -95,9 +101,11 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     @Override
     public void onItemSelected(AdapterView<?> parent,
                                View v, int position, long id) {
+
+        onresumeFirstCall = true;
         Log.d("spinner position", String.valueOf(position));
         //Log.d("zona aparcamiento", zone.getAparcamiento());
-        if (!mIsSpinnerFirstCall) {
+        if (mIsSpinnerFirstCall) {
             //Log.d("zona aparcamiento", zone.getAparcamiento());
             if(zone == null) {
                 Log.d("spinner position", String.valueOf(position));
@@ -120,33 +128,54 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
                 intent.putExtra("desocuppy", true);
                 startActivity(intent);
             }
-        }else
             mIsSpinnerFirstCall = false;
+        }//else
+           // mIsSpinnerFirstCall = false;
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //seleccion.setText("");
     }
-
     @Override
-    public void onResume() {
+    public boolean onTouch(View v, MotionEvent event) {
+        mIsSpinnerFirstCall = true;
+        return false;
+    }
+    @Override
+    public void onResume()
+    {
         super.onResume();
-        //dataAdapter.notifyDataSetChanged();
+        Log.d("Call to ", "onResume");
+        //mIsSpinnerFirstCall = true;
+        //apua =  new Apua(getActivity());
+
+        if (loadingTask == null && onresumeFirstCall) {
+            loadingTask = new LoadingTask(apua);
+            loadingTask.execute();
+        }
+    }
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         for (int i=0; i < parkingsList.size(); i++) {
 
-            // Add a marker in Sydney and move the camera
             LatLng ua = new LatLng(parkingsList.get(i).getLat(), parkingsList.get(i).getLon());
-            mMap.addMarker(new MarkerOptions().position(ua).title("aparcamiento: "+parkingsList.get(i).getCodigo() +
+            mMap.addMarker(new MarkerOptions().position(ua).title("parking: "+ (i+1) + "\naparcamiento: "+parkingsList.get(i).getCodigo() +
                     "\nsuperfie: " + parkingsList.get(i).getSuperficie() +
             "\nplazas: "+ parkingsList.get(i).getPlazas() + "\nlatitude: " + parkingsList.get(i).getLat() +
                     "\nlongitude: " + parkingsList.get(i).getLon()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(ua));
             mMap.setMapType(mMap.MAP_TYPE_SATELLITE);
-            //mPerth.setTag("z");
         }
     }
 

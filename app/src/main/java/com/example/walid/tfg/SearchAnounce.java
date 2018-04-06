@@ -3,12 +3,15 @@ package com.example.walid.tfg;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import model.Apua;
 
 public class SearchAnounce extends AppCompatActivity {
 
@@ -24,14 +27,44 @@ public class SearchAnounce extends AppCompatActivity {
         buscarAnuncio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent().setClass(SearchAnounce.this, AnouncesList.class);
-                intent.putExtra("origen", origen.getText().toString());
-                startActivity(intent);
+                attemptSearchAnounce();
             }
         });
     }
+    private void attemptSearchAnounce() {
+        //final Apua apua =  new Apua(getActivity());
+        // Reset errors.
+        origen.setError(null);
 
+        boolean cancel = false;
+        View focusView = null;
+
+        String mOrigen = origen.getText().toString();
+// Check for a valid email address.
+        if (TextUtils.isEmpty(mOrigen)) {
+            origen.setError(getString(R.string.error_field_required));
+            focusView = origen;
+            cancel = true;
+        } else if (!isOrigenValid(mOrigen)) {
+            origen.setError(getString(R.string.error_invalid_origin));
+            focusView = origen;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            Intent intent = new Intent().setClass(SearchAnounce.this, AnouncesList.class);
+            intent.putExtra("origen", origen.getText().toString());
+            startActivity(intent);
+        }
+    }
+    private boolean isOrigenValid(String mOrigen) {
+
+        return true;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

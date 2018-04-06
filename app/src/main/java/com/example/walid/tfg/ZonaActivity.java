@@ -108,6 +108,11 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //Write your logic here
                 this.finish();
                 return true;
+            case R.id.menu_buscar:
+                Intent intent = new Intent().setClass(
+                        ZonaActivity.this, SearchAnounce.class);
+                startActivity(intent);
+                break;
             /*case R.id.acercaDe:
                 //lanzarAcercaDe();
                 break;*/
@@ -128,7 +133,7 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // Add a marker in Sydney and move the camera
                 LatLng ua = new LatLng(zonasList.get(i).getLat(), zonasList.get(i).getLon());
-                mMap.addMarker(new MarkerOptions().position(ua).title("aparcamiento: " + zonasList.get(i).getAparcamiento()
+                mMap.addMarker(new MarkerOptions().position(ua).title("zona: " + (i+1) + "\naparcamiento: " + zonasList.get(i).getAparcamiento()
                         + "\nlatitude: " + zonasList.get(i).getLat() +
                         "\nlongitude: " + zonasList.get(i).getLon()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(ua));

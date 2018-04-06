@@ -45,5 +45,12 @@
     <string name="detalles">Ejemplo: voy a la universidad de Alicante todos los dias, salgo de Torrevieja, tengo clases por las mañanas</string>
     <string name="buscarAnuncios">Ejemplo: Elche</string>
     <string name="title_activity_insert">Sign in</string>
+    <string name="info_travel"><b>Informacion del viaje</b></string>
+    <string name="conductor"><b>Conductor</b></string>
+    <string name="coche"><b>Coche</b></string>
+    <string name="actividades"><b>Actividades</b></string>
+
+    <string name="lin_to_perfil">Ver perfil</string>
+
 
 </resources>

@@ -90,13 +90,12 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
             case android.R.id.home:
                 //Write your logic here
                 this.finish();
-                /*FragmentTabTree fragment = (FragmentTabTree)
-                        getFragmentManager().findFragmentById(R.id.your_fragment_container_id);
-                        getFragmentManager().beginTransaction()
-                        .detach(fragment)
-                        .attach(fragment)
-                        .commit();*/
                 return true;
+            case R.id.menu_buscar:
+                Intent intent = new Intent().setClass(
+                        OcuppyZone.this, SearchAnounce.class);
+                startActivity(intent);
+                break;
             /*case R.id.acercaDe:
                 //lanzarAcercaDe();
                 break;*/
