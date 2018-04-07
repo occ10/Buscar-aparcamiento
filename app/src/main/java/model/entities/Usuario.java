@@ -19,8 +19,6 @@ public class Usuario implements Parcelable {
     public static final String FOTO = "foto";
     public static final String CONFIRMADO = "confirmado";
 
-
-
     private String email;
     private String nombre;
     private String apellido;
@@ -31,21 +29,16 @@ public class Usuario implements Parcelable {
     private String foto;
     private String confirmado;
 
+    public Usuario() {
+
+    }
+
     public String getConfirmado() {
         return confirmado;
     }
 
     public void setConfirmado(String confirmado) {
         this.confirmado = confirmado;
-    }
-
-    public Usuario() {
-
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public String getEmail() {
@@ -113,12 +106,15 @@ public class Usuario implements Parcelable {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(email);
         dest.writeString(nombre);
         dest.writeString(apellido);
-
-        //dest.writeString(password);
         dest.writeInt(edad);
         dest.writeString(telefono);
         dest.writeString(descripcion);
@@ -150,8 +146,6 @@ public class Usuario implements Parcelable {
             return new Usuario[size];
         }
     };
-
-
 
 }
 

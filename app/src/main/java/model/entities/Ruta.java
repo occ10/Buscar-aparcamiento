@@ -20,6 +20,7 @@ public class Ruta implements Parcelable {
     public static final String FECHAPUBLICACION = "fechaPublicacion";
     public static final String OPCION = "opcion";
     public static final String USER = "user";
+    public static final String CAR = "car";
 
     private int id;
     private int plazas;
@@ -30,8 +31,31 @@ public class Ruta implements Parcelable {
     private java.util.Date fechaPublicacion;
     private int opcion;
     private Usuario user;
+    private Car car;
 
     public Ruta(){}
+
+    public Ruta(int id, int plazas, int plazasOcupadas, String origen, String detalles, double precio, Date fechaPublicacion, int opcion, Usuario user, model.entities.Car car) {
+        this.id = id;
+        this.plazas = plazas;
+        this.plazasOcupadas = plazasOcupadas;
+        this.origen = origen;
+        this.detalles = detalles;
+        this.precio = precio;
+        this.fechaPublicacion = fechaPublicacion;
+        this.opcion = opcion;
+        this.user = user;
+        this.car = car;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
     public double getPrecio() {
         return precio;
     }
@@ -125,6 +149,7 @@ public class Ruta implements Parcelable {
         dest.writeValue(fechaPublicacion);
         dest.writeInt(opcion);
         dest.writeValue(user);
+        dest.writeValue(car);
 
 
     }
@@ -138,6 +163,7 @@ public class Ruta implements Parcelable {
         fechaPublicacion = (java.sql.Date) in.readSerializable();;
         opcion = in.readInt();
         user = (Usuario) in.readSerializable();;
+        car = (Car) in.readSerializable();;
     }
 
     public static final Parcelable.Creator<Ruta> CREATOR

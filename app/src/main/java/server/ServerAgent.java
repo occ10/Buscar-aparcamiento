@@ -37,6 +37,7 @@ public class ServerAgent {
     public static final String UPDATEZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/updateZone";
     public static final String DESOCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/desocuppyZone";
     public static final String USEROCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/userOcuppyZone";
+    public static final String ANOUNCMENTDETAIL_PATH = "http://10.0.2.2:8080/tfg/rest/AnuncioService/anuncio";
 
     private Context context;
     private RestHelper restHelper;
@@ -45,6 +46,17 @@ public class ServerAgent {
     public ServerAgent(Context context) {
         this.context = context;
         this.restHelper = new RestHelper();
+    }
+
+    //TODO
+    public Ruta getAnnouncmentFromServer(String userRoute, int idRoute) throws IOException, NetworkException, JSONException {
+
+        RestResponse response =  getResponseFromServer(ANOUNCMENTDETAIL_PATH + "/" + userRoute + "/" + idRoute);
+        IParser parser = ParserFactory.newInstance()
+                .getRutaParser();
+        String httpContent = response.getHttpContent();
+        Log.d("announcement jsong", httpContent);
+        return (Ruta) parser.getJsonObject(httpContent);
     }
 
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {

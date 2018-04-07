@@ -43,7 +43,9 @@ public class FragmentTabOne extends Fragment {
     RecyclerView recycleview;
     private RoutesAdapter routesAdapter;
     public static final String RUTA_KEY = "ruta";
-    // Session Manager Class
+    public static final String USER = "usuario";
+    Usuario usuario = null;
+            // Session Manager Class
     SessionManager session;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class FragmentTabOne extends Fragment {
         // Session class instance
         //session = new SessionManager(getApplicationContext());
         Bundle extras = getActivity().getIntent().getExtras();
-        Usuario usuario = extras.getParcelable("usuario");
+        usuario = extras.getParcelable("usuario");
 
         Log.d("Usuario apellido", usuario.getApellido());
 
@@ -129,7 +131,7 @@ public class FragmentTabOne extends Fragment {
             List<Ruta> rutas = null;
             try {
                 rutas = apua.serverAgent.getRutasFromServer(usuario);
-
+                Log.d("APPUA ruta plazas",  String.valueOf(rutas.size()));
             } catch (Exception e) {
                 Log.d("RUNNER", "Error trying to log. ", e);
             }
@@ -155,7 +157,7 @@ public class FragmentTabOne extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-
+            Log.d("APPUA position ",  rutasList.get(position).getUser().getNombre());
             holder.ruta = rutasList.get(position);
             holder.nombreUsuario.setText(rutasList.get(position).getUser().getNombre());
             holder.apellidoUsuario.setText(rutasList.get(position).getUser().getApellido());
@@ -172,6 +174,7 @@ public class FragmentTabOne extends Fragment {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, RutaDetailActivity.class);
                         intent.putExtra(RUTA_KEY, holder.ruta.getId());
+                        intent.putExtra(USER, holder.ruta.getUser().getEmail());
                         context.startActivity(intent);
 
                 }

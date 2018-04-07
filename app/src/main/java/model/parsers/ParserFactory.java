@@ -1,5 +1,6 @@
 package model.parsers;
 
+import model.parsers.impl.CarParser;
 import model.parsers.impl.ParkingParser;
 import model.parsers.impl.RutaParser;
 import model.parsers.impl.UsuarioParser;
@@ -25,6 +26,10 @@ public class ParserFactory {
 
     public IParser getZonaParser() {
         return new ZonaParser();
+    }
+
+    public IParser getCarParser() {
+        return new CarParser();
     }
    // public IParser getOpinionParser() { return new OpinionParser(); }
 
