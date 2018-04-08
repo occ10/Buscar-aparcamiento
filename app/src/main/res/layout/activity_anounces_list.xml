@@ -21,20 +21,67 @@
         android:contentDescription="@string/icono"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/etiqueta"
-                android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_weight=".3"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/tamanyo"
-                android:layout_width="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cardNombreUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+
+                <TextView
+                    android:id="@+id/cardApellidoUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+                <TextView
+                    android:id="@+id/cardEdadUsuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_weight=".7"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cardOrigine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/hello_world"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    />
+
+                <TextView
+                    android:id="@+id/cardPrecioPlaza"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+
+                <TextView
+                    android:id="@+id/cardPlazasDisponible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

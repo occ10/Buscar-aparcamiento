@@ -31,6 +31,7 @@ public class ServerAgent {
     public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
     public static final String RUTA_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/insertRoute";
+    public static final String RUTAS_FROM_ORIGIN_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routesOrigine";
     public static final String RUTAS_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routes";
     public static final String PARKINGS_PATH = "http://10.0.2.2:8080/tfg/rest/ParkingService/parking";
     public static final String ZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zona";
@@ -56,9 +57,18 @@ public class ServerAgent {
                 .getRutaParser();
         String httpContent = response.getHttpContent();
         Log.d("announcement jsong", httpContent);
-        return (Ruta) parser.getJsonObject(httpContent);
+        return httpContent != null ? (Ruta) parser.getJsonObject(httpContent) : null;
     }
+    public List<Ruta> getRutasOriginFromServer(String email, String origin) throws IOException, NetworkException, JSONException {
 
+        RestResponse response =  getResponseFromServer(RUTAS_FROM_ORIGIN_PATH + "/" + email + "/" + origin);
+        IParser parser = ParserFactory.newInstance()
+                .getRutaParser();
+        String httpContent = response.getHttpContent();
+        Log.d("Apua jsong", httpContent);
+        return httpContent != null ? parser.fromJson(httpContent) : null;
+
+    }
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {
 
         RestResponse response =  getResponseFromServer(RUTAS_PATH + "/" + usuario.getEmail());
@@ -66,7 +76,7 @@ public class ServerAgent {
                 .getRutaParser();
         String httpContent = response.getHttpContent();
         Log.d("Apua jsong", httpContent);
-        return parser.fromJson(httpContent);
+        return httpContent != null ? parser.fromJson(httpContent) : null;
     }
     public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario) throws IOException, NetworkException {
 

@@ -58,6 +58,7 @@ public class SearchAnounce extends AppCompatActivity {
         } else {
             Intent intent = new Intent().setClass(SearchAnounce.this, AnouncesList.class);
             intent.putExtra("origen", origen.getText().toString());
+            //intent.putExtra("origen", origen.getText().toString());
             startActivity(intent);
         }
     }

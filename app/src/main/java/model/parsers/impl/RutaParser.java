@@ -120,12 +120,14 @@ public class RutaParser implements IParser<Ruta>{
         List<Ruta> rutas = new LinkedList<Ruta>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
-        Ruta ruta = new Ruta();
-        Usuario usuario = new Usuario();
-        Car car = new Car();
+        Ruta ruta = null;
+        Usuario usuario = null;
+        Car car = null;
         for (int i = 0; i<jsonArray.length(); i++) {
             JSONObject nuevo = jsonArray.getJSONObject(i);
-
+            ruta = new Ruta();
+            usuario = new Usuario();
+            car = new Car();
             ruta.setId(nuevo.getInt(ID));
             ruta.setPlazas(nuevo.getInt(PLAZAS));
             ruta.setPlazasOcupadas(nuevo.getInt(PLAZASOCUPADAS));

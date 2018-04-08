@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,10 +46,12 @@ public class FragmentTabOne extends Fragment {
     public static final String RUTA_KEY = "ruta";
     public static final String USER = "usuario";
     Usuario usuario = null;
+    private Apua apua;
+    private Boolean onresumeCall = false;
             // Session Manager Class
     SessionManager session;
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Session class instance
         //session = new SessionManager(getApplicationContext());
@@ -57,7 +60,7 @@ public class FragmentTabOne extends Fragment {
 
         Log.d("Usuario apellido", usuario.getApellido());
 
-        final Apua apua =  new Apua(getActivity());
+        apua =  new Apua(getActivity());
 
                     /*((MyAppContext)getApplicationContext()
                     .getApplicationContext())
@@ -66,87 +69,41 @@ public class FragmentTabOne extends Fragment {
             loadingTask = new LoadingTask(apua, usuario);
             loadingTask.execute();
         }
-
-
     }
-
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        //View view = inflater.inflate(R.layout.fragment_item_list, container, false);
         //Log.d("rutas tamaño1", rutasList.toString());
-        routesAdapter = new RoutesAdapter();
+        //routesAdapter = new RoutesAdapter();
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-                RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                recyclerView.setAdapter(routesAdapter);
-        }
-       /* listView = (ListView ) v.findViewById(R.id.list);
-
-        TextView textview = (TextView ) v.findViewById(R.id.empty);
-        // Obtener el ListView
-        FrameLayout frameLayout =
-                v.findViewById(R.id.frame);
-        if (items.length != 0) {
-            listView.setVisibility(View.VISIBLE);
-            frameLayout.getChildAt(1).setVisibility(View.INVISIBLE);
-        }
-        else {
-            listView.setVisibility(View.INVISIBLE);
-            frameLayout.getChildAt(1).setVisibility(View.VISIBLE);
-            textview.setText(this.getTag() + " Content 1");
-
-        }
-
-
-        ListView listView = (ListView)frameLayout.getChildAt(0);
-        ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<String>(getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        items);
-
-
-        listView.setAdapter(arrayAdapter);*/
-        //listView.setOnItemSelectedListener(getActivity());
-        //selection = (TextView) v.findViewById(R.id.elemento_seleccionado);
-        /*TextView tv = (TextView) v.findViewById(R.id.text);
-        tv.setText(this.getTag() + " Content 1");*/
-        return view;
+        RecyclerView rv = (RecyclerView) inflater.inflate(
+                R.layout.fragment_item_list, container, false);
+        rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
+        routesAdapter = new RoutesAdapter(getActivity());
+        rv.setAdapter(routesAdapter);
+        return rv;
     }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Log.d("Call to ", "onResume");
+        //mIsSpinnerFirstCall = true;
+        //apua =  new Apua(getActivity());
 
-    public class LoadingTask extends AsyncTask<Void, Void, List<Ruta>> {
-        private Apua apua;
-        public Usuario usuario;
-
-        public LoadingTask(Apua apua,Usuario usuario) {
-            this.apua=apua;
-            this.usuario = usuario;
-        }
-
-        @Override
-        protected List<Ruta> doInBackground(Void... voids) {
-            List<Ruta> rutas = null;
-            try {
-                rutas = apua.serverAgent.getRutasFromServer(usuario);
-                Log.d("APPUA ruta plazas",  String.valueOf(rutas.size()));
-            } catch (Exception e) {
-                Log.d("RUNNER", "Error trying to log. ", e);
-            }
-            return rutas;
-        }
-
-        @Override
-        protected void onPostExecute(List<Ruta> rutas) {
-                rutasList = rutas;
-                routesAdapter.notifyDataSetChanged();
+        if (loadingTask == null && onresumeCall) {
+            loadingTask = new LoadingTask(apua,usuario);
+            loadingTask.execute();
         }
     }
 
     public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder>{
-       // private List<Ruta> rutasList = new ArrayList<>();
+        public RoutesAdapter(Context context) {
+        }
+        // private List<Ruta> rutasList = new ArrayList<>();
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -169,7 +126,7 @@ public class FragmentTabOne extends Fragment {
 
                     @Override
                     public void onClick(View v) {
-
+                        onresumeCall = true;
                         /*session.checkLogin();*/
                         Context context = v.getContext();
                         Intent intent = new Intent(context, RutaDetailActivity.class);
@@ -211,4 +168,71 @@ public class FragmentTabOne extends Fragment {
         }
     }
 
+    public class LoadingTask extends AsyncTask<Void, Void, List<Ruta>> {
+        private Apua apua;
+        public Usuario usuario;
+
+        public LoadingTask(Apua apua,Usuario usuario) {
+            this.apua=apua;
+            this.usuario = usuario;
+        }
+
+        @Override
+        protected List<Ruta> doInBackground(Void... voids) {
+            List<Ruta> rutas = null;
+            try {
+                rutas = apua.serverAgent.getRutasFromServer(usuario);
+                //Log.d("APPUA ruta plazas",  String.valueOf(rutasList.size()));
+
+            } catch (Exception e) {
+                Log.d("APPUA", "Error trying to get Routes. ", e);
+            }
+            return rutas;
+        }
+
+        @Override
+        protected void onPostExecute(List<Ruta> rutas) {
+            FragmentTabOne.this.rutasList = rutas;
+            routesAdapter.notifyDataSetChanged();
+        }
+    }
+
 }
+
+        /*if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+                RecyclerView recyclerView = (RecyclerView) view;
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                recyclerView.setAdapter(new RoutesAdapter(getActivity()));
+        }*/
+       /* listView = (ListView ) v.findViewById(R.id.list);
+
+        TextView textview = (TextView ) v.findViewById(R.id.empty);
+        // Obtener el ListView
+        FrameLayout frameLayout =
+                v.findViewById(R.id.frame);
+        if (items.length != 0) {
+            listView.setVisibility(View.VISIBLE);
+            frameLayout.getChildAt(1).setVisibility(View.INVISIBLE);
+        }
+        else {
+            listView.setVisibility(View.INVISIBLE);
+            frameLayout.getChildAt(1).setVisibility(View.VISIBLE);
+            textview.setText(this.getTag() + " Content 1");
+
+        }
+
+
+        ListView listView = (ListView)frameLayout.getChildAt(0);
+        ArrayAdapter<String> arrayAdapter =
+                new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        items);
+
+
+        listView.setAdapter(arrayAdapter);*/
+//listView.setOnItemSelectedListener(getActivity());
+//selection = (TextView) v.findViewById(R.id.elemento_seleccionado);
+        /*TextView tv = (TextView) v.findViewById(R.id.text);
+        tv.setText(this.getTag() + " Content 1");*/
+//return view;

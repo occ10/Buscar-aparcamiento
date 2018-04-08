@@ -1,5 +1,6 @@
 package com.example.walid.tfg;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -19,18 +20,16 @@ import java.util.List;
 
 import model.Apua;
 import model.entities.Ruta;
+import model.entities.Usuario;
 
 public class AnouncesList extends AppCompatActivity {
 
     private RecyclerView recyclerView = null;
     AsyncTask<Void, Void, List<Ruta> > loadingTask;
-    private static final String[] items = {"En", "un", "lugar", "de",
-            "la", "Mancha", "de", "cuyo", "nombre", "no", "quiero",
-            "acordarme", "no", "ha", "mucho", "tiempo", "que",
-            "vivía", "un", "hidalgo", "de", "los", "de", "lanza",
-            "en", "astillero", "adarga", "antigua", "rocín", "flaco",
-            "y", "galgo", "corredor"};
     private List<Ruta> rutasList = new ArrayList<>();
+    private Usuario user;
+    public static final String RUTA_KEY = "ruta";
+    public static final String USER = "usuario";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +39,7 @@ public class AnouncesList extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String origen = extras.getString("origen");
         final Apua apua = new Apua(this);
+        user = extras.getParcelable("usuario");
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua,origen);
             loadingTask.execute();
@@ -100,38 +100,65 @@ public class AnouncesList extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(FilaHolder holder, int position) {
-            holder.bindModel(items[position]);
+        public void onBindViewHolder(final FilaHolder holder, int position) {
+            holder.ruta = rutasList.get(position);
+            holder.bindModel(rutasList.get(position));
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    //onresumeCall = true;
+                        /*session.checkLogin();*/
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, RutaDetailActivity.class);
+                    intent.putExtra(RUTA_KEY, holder.ruta.getId());
+                    intent.putExtra(USER, holder.ruta.getUser().getEmail());
+                    context.startActivity(intent);
+
+                }
+            });
         }
         @Override
         public int getItemCount() {
-            return(items.length);
+            return(rutasList.size());
         }
 
     }
     static class FilaHolder extends RecyclerView.ViewHolder {
-        TextView etiqueta = null;
-        TextView tamanyo = null;
-        ImageView icono = null;
-        String template = null;
+        public Ruta ruta;
+        public final View mView ;
+        public final ImageView icono;
+        public final String template = null;
+        public final TextView cardNombreUsuario;
+        public final TextView cardApellidoUsuario;
+        public final TextView cardEdadUsuario;
+        public final TextView cardOrigine;
+        public final TextView cardPrecioPlaza;
+        public final TextView cardPlazasDisponible;
+
         FilaHolder(View fila) {
             super(fila);
-            etiqueta = (TextView)fila.findViewById(R.id.etiqueta);
-            tamanyo = (TextView)fila.findViewById(R.id.tamanyo);
+            mView = fila;
+            cardNombreUsuario = (TextView)fila.findViewById(R.id.cardNombreUsuario);
+            cardApellidoUsuario = (TextView)fila.findViewById(R.id.cardApellidoUsuario);
+            cardEdadUsuario = (TextView)fila.findViewById(R.id.cardEdadUsuario);
+            cardOrigine = (TextView)fila.findViewById(R.id.cardOrigine);
+            cardPrecioPlaza = (TextView)fila.findViewById(R.id.cardPrecioPlaza);
+            cardPlazasDisponible = (TextView)fila.findViewById(R.id.cardPlazasDisponible);
             icono = (ImageView)fila.findViewById(R.id.icono);
-            template = tamanyo.getContext()
-                    .getString(R.string.tamanyo_template);
+            //template = cardEdadUsuario.getContext()
+                    //.getString(R.string.tamanyo_template);
         }
-        private void bindModel(String item) {
-            etiqueta.setText(item);
-            tamanyo.setText(String.format(template, item.length()));
-            if (item.length()>4) {
-                icono.setImageResource(R.drawable.unkonwnfoto);
-            }
+        private void bindModel(Ruta route) {
+            cardNombreUsuario.setText(route.getUser().getNombre());
+            cardApellidoUsuario.setText(route.getUser().getApellido());
+            cardEdadUsuario.setText("Edad: " + String.valueOf(route.getUser().getEdad()));
+            cardOrigine.setText("Salida:" + route.getOrigen());
+            cardPrecioPlaza.setText("Precio:" + String.valueOf(route.getPrecio()));
+            cardPlazasDisponible.setText("Plazas disponibles:" + String.valueOf(route.getPlazas() - route.getPlazasOcupadas()));
+            //cardApellidoUsuario.setText(String.format(template, item.length()));
+            icono.setImageResource(R.drawable.unkonwnfoto);
 
-            else {
-                icono.setImageResource(R.drawable.unkonwnfoto);
-            }
         }
     }
 
@@ -148,10 +175,10 @@ public class AnouncesList extends AppCompatActivity {
         protected List<Ruta> doInBackground(Void... voids) {
             List<Ruta> rutas = null;
             try {
-                //rutas = apua.serverAgent.getRutasOriginFromServer(usuario);
-
+                rutasList = apua.serverAgent.getRutasOriginFromServer("kkk.kkk.com",origen);
+                Log.d("APPUA card view lis", String.valueOf(rutasList.size()));
             } catch (Exception e) {
-                Log.d("RUNNER", "Error trying to log. ", e);
+                Log.d("APPUA", "Error trying to log. ", e);
             }
             return rutas;
         }
