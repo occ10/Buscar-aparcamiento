@@ -12,6 +12,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.walid.tfg.SearchAnounce">
 
+    <ProgressBar
+        android:id="@+id/search_anounce_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/searchAnounceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -49,5 +63,5 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/mapa2" />
 
-
+    </LinearLayout>
 </LinearLayout>

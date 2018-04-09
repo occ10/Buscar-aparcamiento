@@ -13,8 +13,8 @@
         android:orderInCategory="95"
         app:showAsAction="never">
     </item>
-    <item android:id="@+id/config3"
-        android:title="@string/btn_configurar"
+    <item android:id="@+id/cerrarSesion"
+        android:title="@string/cerrar_sesion"
         android:orderInCategory="95"
         app:showAsAction="never">
     </item>

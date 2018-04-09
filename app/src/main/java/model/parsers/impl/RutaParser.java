@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class RutaParser implements IParser<Ruta>{
     @Override
     public List<Ruta> fromJson(String json) throws JSONException {
         JSONArray jsonArray = new JSONArray(json);
-        List<Ruta> rutas = new LinkedList<Ruta>();
+        List<Ruta> rutas = new ArrayList<Ruta>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         Ruta ruta = null;

@@ -49,10 +49,16 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.menu_buscar:
-                Intent intent = new Intent().setClass(
+                intent = new Intent().setClass(
                         MainActivity.this, SearchAnounce.class);
+                startActivity(intent);
+                break;
+            case R.id.cerrarSesion:
+                intent = new Intent().setClass(
+                        MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
         }

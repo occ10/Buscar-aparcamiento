@@ -51,6 +51,11 @@
     <string name="actividades"><b>Actividades</b></string>
 
     <string name="lin_to_perfil">Ver perfil</string>
+    <string name="cerrar_sesion"><b>Cerrar sesion</b></string>
+    <string name="info_message_search">
+
+        <strong>Info!</strong> No hay resultados para esta busqueda
+    </string>
 
 
 </resources>

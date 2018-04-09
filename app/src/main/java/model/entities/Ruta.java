@@ -148,8 +148,8 @@ public class Ruta implements Parcelable {
         dest.writeDouble(precio);
         dest.writeValue(fechaPublicacion);
         dest.writeInt(opcion);
-        dest.writeValue(user);
-        dest.writeValue(car);
+        dest.writeParcelable(user,flags);
+        dest.writeParcelable(car,flags);
 
 
     }
@@ -160,10 +160,10 @@ public class Ruta implements Parcelable {
         origen = in.readString();
         detalles = in.readString();
         precio = in.readDouble();
-        fechaPublicacion = (java.sql.Date) in.readSerializable();;
+        fechaPublicacion = (java.util.Date) in.readValue((java.util.Date.class.getClassLoader()));
         opcion = in.readInt();
-        user = (Usuario) in.readSerializable();;
-        car = (Car) in.readSerializable();;
+        user = (Usuario) in.readParcelable(Usuario.class.getClassLoader());
+        car = (Car) in.readParcelable(Car.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Ruta> CREATOR

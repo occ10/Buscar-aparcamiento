@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,28 +27,44 @@ public class AnouncesList extends AppCompatActivity {
 
     private RecyclerView recyclerView = null;
     AsyncTask<Void, Void, List<Ruta> > loadingTask;
-    private List<Ruta> rutasList = new ArrayList<>();
+    private List<Ruta> rutasList =new ArrayList<>();
     private Usuario user;
     public static final String RUTA_KEY = "ruta";
     public static final String USER = "usuario";
+    private AdaptadorConIcono adaptadorConIcono;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLayoutManager(new LinearLayoutManager(this));
-        setAdapter(new AdaptadorConIcono());
+        setContentView(R.layout.anounces);
         getSupportActionBar().setHomeButtonEnabled(true);
         Bundle extras = getIntent().getExtras();
-        String origen = extras.getString("origen");
-        final Apua apua = new Apua(this);
-        user = extras.getParcelable("usuario");
-        if (loadingTask == null) {
+        //String origen = extras.getString("origen");
+        //final Apua apua = new Apua(this);
+        //user = extras.getParcelable("usuario");
+        rutasList =  extras.getParcelableArrayList("mylist");
+        Log.d("rustas list size", String.valueOf(rutasList.size()));
+        RecyclerView rv = (RecyclerView) findViewById(R.id.cardList);
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        adaptadorConIcono = new AdaptadorConIcono();
+        rv.setAdapter(adaptadorConIcono);
+
+       /* if (loadingTask == null) {
             loadingTask = new LoadingTask(apua,origen);
             loadingTask.execute();
-        }
-
+        }*/
     }
 
-    public RecyclerView getRecyclerView() {
+    @Override
+    public void onStart(){
+        super.onStart();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    /*public RecyclerView getRecyclerView() {
         if (recyclerView == null) {
             synchronized (AnouncesList.class) {
                 if (recyclerView == null) {
@@ -67,7 +84,7 @@ public class AnouncesList extends AppCompatActivity {
     }
     public void setLayoutManager(RecyclerView.LayoutManager manager) {
         getRecyclerView().setLayoutManager(manager);
-    }
+    }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu;
@@ -107,8 +124,7 @@ public class AnouncesList extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    //onresumeCall = true;
-                        /*session.checkLogin();*/
+
                     Context context = v.getContext();
                     Intent intent = new Intent(context, RutaDetailActivity.class);
                     intent.putExtra(RUTA_KEY, holder.ruta.getId());
@@ -159,34 +175,6 @@ public class AnouncesList extends AppCompatActivity {
             //cardApellidoUsuario.setText(String.format(template, item.length()));
             icono.setImageResource(R.drawable.unkonwnfoto);
 
-        }
-    }
-
-    public class LoadingTask extends AsyncTask<Void, Void, List<Ruta>> {
-        private Apua apua;
-        private String origen;
-
-        public LoadingTask(Apua apua,String origen) {
-            this.apua=apua;
-            this.origen = origen;
-        }
-
-        @Override
-        protected List<Ruta> doInBackground(Void... voids) {
-            List<Ruta> rutas = null;
-            try {
-                rutasList = apua.serverAgent.getRutasOriginFromServer("kkk.kkk.com",origen);
-                Log.d("APPUA card view lis", String.valueOf(rutasList.size()));
-            } catch (Exception e) {
-                Log.d("APPUA", "Error trying to log. ", e);
-            }
-            return rutas;
-        }
-
-        @Override
-        protected void onPostExecute(List<Ruta> rutas) {
-            //rutasList = rutas;
-            //routesAdapter.notifyDataSetChanged();
         }
     }
 
