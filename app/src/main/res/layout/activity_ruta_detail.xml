@@ -89,33 +89,31 @@
                     android:layout_alignTop ="@+id/publicationDate"
                     android:layout_toRightOf="@+id/publicationDate"/>
 
-                <LinearLayout
-                    android:id="@+id/detalleContent"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/detailRouteText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="10pt"
-                    android:layout_below="@+id/publicationDate">
+                    android:layout_below="@+id/publicationDate"
+                    android:text="Detalles:"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Detalles:"/>
-                    <ImageButton
-                        android:id="@+id/downButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:layout_marginLeft="10pt"
-                        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/downButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="10pt"
+                    android:layout_toRightOf="@+id/detailRouteText"
+                    android:layout_alignBottom="@+id/detailRouteText"
+                    android:layout_alignTop="@+id/detailRouteText"
+                    android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+
                 <TextView
                     android:id="@+id/routeDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/detalleContent"
-                    android:visibility="gone">
-                </TextView>
+                    android:layout_below="@+id/detailRouteText"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <TextView
@@ -184,27 +182,24 @@
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:src="@drawable/unkonwnfoto"
+                    android:src="@drawable/car"
                     android:layout_width="60dp"
                     android:layout_height="60dp" />
 
                 <TextView
                     android:id="@+id/carModel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="usuario" />
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/carCategory"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="usuario" />
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/carColor"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="usuario" />
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

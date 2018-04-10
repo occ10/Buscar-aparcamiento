@@ -53,9 +53,25 @@
     <string name="lin_to_perfil">Ver perfil</string>
     <string name="cerrar_sesion"><b>Cerrar sesion</b></string>
     <string name="info_message_search">
-
         <strong>Info!</strong> No hay resultados para esta busqueda
     </string>
-
+    <string name="activity">
+        <b>Actividad</b>
+    </string>
+    <string name="detailName">
+        <strong>Detalles:</strong>
+    </string>
+    <string name="mobil">
+        <strong>Tel:</strong>
+    </string>
+    <string name="email">
+        <strong>Correo:</strong>
+    </string>
+    <string name="coments">
+        <b>Comentarios:</b>
+    </string>
+    <string name="link_to_coments">
+        <strong><b>Ver todos los comentarios</b></strong>
+    </string>
 
 </resources>

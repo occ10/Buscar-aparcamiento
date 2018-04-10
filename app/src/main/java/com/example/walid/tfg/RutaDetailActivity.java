@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import model.Apua;
@@ -34,17 +36,19 @@ public class RutaDetailActivity extends AppCompatActivity {
     private TextView carModelView;
     private TextView carCategoryView;
     private TextView carColorView;
-
-
+    private Boolean onresumeFirstCall = false;
+    private String userRoute;
+    private int idRoute;
+    private Apua apua;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ruta_detail);
         getSupportActionBar().setHomeButtonEnabled(true);
-        final Apua apua = new Apua(this);
+        apua = new Apua(this);
         Bundle extras = getIntent().getExtras();
-        String userRoute = extras.getString("usuario");
-        int idRoute = extras.getInt("ruta");
+        userRoute = extras.getString("usuario");
+        idRoute = extras.getInt("ruta");
 
         departureView = (TextView) findViewById(R.id.departureText);
         priceRouteView = (TextView) findViewById(R.id.priceRouteText);;
@@ -62,8 +66,19 @@ public class RutaDetailActivity extends AppCompatActivity {
             loadingTask = new LoadingTask(apua, userRoute, idRoute);
             loadingTask.execute();
         }
-
+        final TextView lin_perfil= (TextView) findViewById(R.id.lin_perfil);
         final ImageButton showDetalle = (ImageButton) findViewById(R.id.downButton);
+        lin_perfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onresumeFirstCall = true;
+                loadingTask = null;
+                Intent intent = new Intent().setClass(
+                        RutaDetailActivity.this, UserPerfilActivity.class);
+                //intent.putExtra("usuario", usuario);
+                startActivity(intent);
+            }
+        });
 
         showDetalle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +97,25 @@ public class RutaDetailActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void onResume()
+    {
+        super.onResume();
+        Log.d("Call to ", "onResume");
+        if (loadingTask == null) {
+            loadingTask = new LoadingTask(apua, userRoute, idRoute);
+            loadingTask.execute();
+        }
+    }
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu;
@@ -134,15 +167,17 @@ public class RutaDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onPostExecute(Ruta ruta) {
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+
         Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
         departureView.setText(ruta.getOrigen());
         priceRouteView.setText(String.valueOf(ruta.getPrecio()) + " €");
         placesRouteView.setText(String.valueOf(ruta.getPlazas()) + " disponibles");
-        publicationDateView.setText(String.valueOf(ruta.getFechaPublicacion()));
+        publicationDateView.setText(df.format(ruta.getFechaPublicacion()));
         routeDetailView.setText(ruta.getDetalles());
         nameUserView.setText(ruta.getUser().getNombre());
         fullNameUserView.setText(ruta.getUser().getApellido());
-        ageUserView.setText(String.valueOf(ruta.getUser().getEdad()) + "años");
+        ageUserView.setText(String.valueOf(ruta.getUser().getEdad()) + " años");
         carModelView.setText(ruta.getCar().getBrand());
         carCategoryView.setText("Categoria: " + ruta.getCar().getCategory());
         carColorView.setText("Color: " + ruta.getCar().getColor());

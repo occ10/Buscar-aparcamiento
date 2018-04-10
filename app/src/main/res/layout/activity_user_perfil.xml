@@ -1,9 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.walid.tfg.UserPerfilActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10pt"
+                android:background="@drawable/border_bottom">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userPerfilImage"
+                    android:src="@drawable/unkonwnfoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10pt"/>
+                <TextView
+                    android:id="@+id/userPerfilName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userPerfilImage"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10pt"
+                    android:textSize="10pt"
+                    android:text="usuario" />
+
+                <TextView
+                    android:id="@+id/userPerfilFulname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userPerfilName"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="10pt"
+                    android:text="usuario" />
+
+                <TextView
+                    android:id="@+id/userPerfilAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userPerfilFulname"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="10pt"
+                    android:text="usuario" />
+
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="10pt"
+                android:background="@drawable/border_bottom">
+
+                <TextView
+                    android:id="@+id/activituPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10pt"
+                    android:layout_marginBottom="10pt"
+                    android:layout_marginLeft="10pt"
+                    android:textSize="10pt"
+                    android:text="@string/activity"/>
+
+                <TextView
+                    android:id="@+id/numTravels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10pt"
+                    android:text="viajes publicados"/>
+
+                <TextView
+                    android:id="@+id/numComents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10pt"
+                    android:text="comentarios recibidos"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10pt"
+                    android:layout_marginLeft="10pt"
+                    android:text="@string/detailName"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10pt"
+                    android:text="@string/mobil"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10pt"
+                    android:text="@string/email"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/comentTextPerfil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10pt"
+                        android:layout_marginLeft="10pt"
+                        android:textSize="10pt"
+                        android:text="@string/coments"/>
+                    <ImageButton
+                        android:id="@+id/downButtonPerfil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:layout_toRightOf="@+id/comentTextPerfil"
+                        android:layout_alignBottom="@+id/comentTextPerfil"
+                        android:layout_alignTop="@+id/comentTextPerfil"
+                        android:layout_marginLeft="10pt"
+                        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10pt"
+                    android:layout_marginLeft="10pt">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Un chico muy correcto y servicial. Llevo a mi madre y hermana de Alcoy a Valencia y les hizo el favor de recogerlas en otro sitio porque hacía mal tiempo. Y el viaje fue genial. Para repetir"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10pt"
+                    android:layout_marginBottom="10pt"
+                    android:layout_marginLeft="10pt">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Un chico muy correcto y servicial. Llevo a mi madre y hermana de Alcoy a Valencia y les hizo el favor de recogerlas en otro sitio porque hacía mal tiempo. Y el viaje fue genial. Para repetir"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
