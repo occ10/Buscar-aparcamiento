@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import model.Apua;
+import model.entities.Car;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
@@ -38,13 +39,14 @@ import model.entities.Usuario;
 public class FragmentTabTwo extends Fragment {
 
     AsyncTask<Void, Void, Boolean >loadingTask;
-    TextView origen;
-    EditText precio;
-    EditText plazas;
-    EditText detallesRuta;
-    Usuario usuario;
+    private TextView origen;
+    private EditText precio;
+    private EditText plazas;
+    private EditText detallesRuta;
+    private Usuario usuario;
     private View mProgressView;
     private View mInsertFormView;
+    private Car car = null;
 
     public static FragmentTabTwo newInstance() {
         FragmentTabTwo fragment = new FragmentTabTwo();
@@ -149,7 +151,7 @@ public class FragmentTabTwo extends Fragment {
             plazas.setText("");
             detallesRuta.setText("");
             showProgress(true);
-            loadingTask = new FragmentTabTwo.LoadingTask(apua, mOrigen, mPrecio, mPlazas, mDetallesRuta, usuario);
+            loadingTask = new FragmentTabTwo.LoadingTask(apua, mOrigen, mPrecio, mPlazas, mDetallesRuta, usuario, car);
             loadingTask.execute();
 
         }
@@ -212,7 +214,7 @@ public class FragmentTabTwo extends Fragment {
         private String plazas;
         private String detallesRuta;
 
-        public LoadingTask(Apua apua,String origen,String precio,String plazas,String detallesRuta, Usuario usuario) {
+        public LoadingTask(Apua apua,String origen,String precio,String plazas,String detallesRuta, Usuario usuario, Car car) {
             this.apua = apua;
             this.origen = origen;
             this.precio = precio;
@@ -225,7 +227,7 @@ public class FragmentTabTwo extends Fragment {
             boolean succes = false;
             try {
                 Log.d("UNIVERSITY", "se llama al servidor........... ");
-                succes = apua.serverAgent.insertRoute(origen, precio, plazas,detallesRuta,usuario);
+                succes = apua.serverAgent.insertRoute(origen, precio, plazas,detallesRuta,usuario, car);
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to log. ", e);

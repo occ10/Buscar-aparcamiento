@@ -156,7 +156,7 @@ public class SearchAnounce extends AppCompatActivity {
         protected List<Ruta> doInBackground(Void... voids) {
             List<Ruta> rutas = null;
             try {
-                rutas = apua.serverAgent.getRutasOriginFromServer("kkk.kkk.com", origen);
+                rutas = apua.serverAgent.getRutasOriginFromServer("kkk@kkk.com", origen);
                 Log.d("rustas list size", String.valueOf(rutas.size()));
 
             } catch (Exception e) {

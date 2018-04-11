@@ -1,6 +1,8 @@
 package com.example.walid.tfg;
 
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,32 +10,106 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Apua;
+import model.entities.Comment;
+import model.entities.Usuario;
 
 public class UserPerfilActivity extends AppCompatActivity {
-    Boolean QuickFactsExpanded = true;
+    private Boolean QuickFactsExpanded = true;
+    private Usuario user = null;
+    private AsyncTask<Void, Void, List<Comment> > loadingTask;
+    private Apua apua;
+    private LinearLayout firstLayoutPerfil;
+    private TextView firstCommentPerfil;
+    private TextView comentInfoTextPerfil;
+    private ImageButton downButtonPerfil;
+    private LinearLayout secondLayoutPerfil;
+    private TextView secondCommentPerfil;
+    private LinearLayout layoutContainerComments;
+    private TextView link_comments;
+    private TextView nameFirstCommentPerfil;
+    private TextView nameSecondCommentPerfil;
+    private List<Comment> commentsList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_perfil);
-        Log.d("Activity :","UserPerfilActivity");
         getSupportActionBar().setHomeButtonEnabled(true);
+        Bundle extras = getIntent().getExtras();
+        user = extras.getParcelable("usuario");
+        Log.d("user email: ",user.getEmail());
 
-        final ImageButton showDetalle = (ImageButton) findViewById(R.id.downButtonPerfil);
+        TextView userPerfilName = (TextView) findViewById(R.id.userPerfilName);
+        TextView userPerfilFulname = (TextView) findViewById(R.id.userPerfilFulname);
+        TextView userPerfilAge = (TextView) findViewById(R.id.userPerfilAge);
+        TextView userTelPerfil = (TextView) findViewById(R.id.userTelPerfil);
+        TextView userEmailPerfil = (TextView) findViewById(R.id.userEmailPerfil);
+        firstLayoutPerfil = (LinearLayout) findViewById(R.id.firstLayoutPerfil);
+        firstCommentPerfil = (TextView) findViewById(R.id.firstCommentPerfil);
+        comentInfoTextPerfil = (TextView) findViewById(R.id.comentInfoTextPerfil);
+        secondLayoutPerfil = (LinearLayout) findViewById(R.id.secondLayoutPerfil);
+        secondCommentPerfil = (TextView) findViewById(R.id.secondCommentPerfil);
+        layoutContainerComments = (LinearLayout) findViewById(R.id.layoutContainerComments);
+        link_comments = (TextView) findViewById(R.id.link_comments);
+        nameFirstCommentPerfil = (TextView) findViewById(R.id.nameFirstCommentPerfil);
+        nameSecondCommentPerfil = (TextView) findViewById(R.id.nameSecondCommentPerfil);
 
-        showDetalle.setOnClickListener(new View.OnClickListener() {
+        userPerfilName.setText(user.getNombre());
+        userPerfilFulname.setText(user.getApellido());
+        userPerfilAge.setText(String.valueOf(user.getEdad()) + "años");
+        userTelPerfil.setText("Tel: " + user.getTelefono());
+        userEmailPerfil.setText("Correo: " + user.getEmail());
+
+        apua =  new Apua(this);
+        if (loadingTask == null) {
+            loadingTask = new LoadingTask(apua, user.getEmail());
+            loadingTask.execute();
+        }
+
+        downButtonPerfil = (ImageButton) findViewById(R.id.downButtonPerfil);
+        downButtonPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TextView routeDetal = (TextView) findViewById(R.id.routeDetail);
 
                 if(QuickFactsExpanded) {
                     QuickFactsExpanded = false;
-                    //routeDetal.setVisibility(View.VISIBLE);
-                    showDetalle.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                    layoutContainerComments.setVisibility(View.VISIBLE);
+                    downButtonPerfil.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                    nameFirstCommentPerfil.setText(commentsList.get(0).getUser().getNombre() + " ");
+                    firstCommentPerfil.setText(commentsList.get(0).getComment());
+                    if(commentsList.size() > 1){
+                        secondLayoutPerfil.setVisibility(View.VISIBLE);
+                        nameSecondCommentPerfil.setText(commentsList.get(0).getUser().getNombre() + " ");
+                        secondCommentPerfil.setText(commentsList.get(0).getComment());
+                    }
+                    if(commentsList.size() > 2){
+                        link_comments.setVisibility(View.VISIBLE);
+                        link_comments.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent().setClass(
+                                        UserPerfilActivity.this, CommentActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList("commentsList", (ArrayList<? extends Parcelable>) commentsList);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+
+                        });
+                    }
                 }else{
                     QuickFactsExpanded = true;
-                    //routeDetal.setVisibility(View.GONE);
-                    showDetalle.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                    layoutContainerComments.setVisibility(View.GONE);
+                    downButtonPerfil.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
                 }
             }
         });
@@ -63,5 +139,40 @@ public class UserPerfilActivity extends AppCompatActivity {
                 break;*/
         }
         return true;
+    }
+
+    public class LoadingTask extends AsyncTask<Void, Void, List<Comment>> {
+        private Apua apua;
+        private String email;
+
+        public LoadingTask(Apua apua, String email) {
+            this.apua = apua;
+            this.email = email;
+        }
+
+        @Override
+        protected List<Comment> doInBackground(Void... voids) {
+            List<Comment> comments = null;
+            try {
+                comments = apua.serverAgent.getCommentsFromServer(email);
+                Log.d("rustas list size", String.valueOf(comments.size()));
+
+            } catch (Exception e) {
+                Log.d("APPUA", "Error trying to log. ", e);
+            }
+            return comments;
+        }
+
+        @Override
+        protected void onPostExecute(List<Comment> comments) {
+            loadingTask = null;
+            commentsList = comments;
+            if (comments.size() > 0) {
+                comentInfoTextPerfil.setVisibility(View.GONE);
+                downButtonPerfil.setVisibility(View.VISIBLE);
+
+            }
+            //showProgress(false);
+        }
     }
 }

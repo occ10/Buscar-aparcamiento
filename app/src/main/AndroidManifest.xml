@@ -50,8 +50,9 @@
         <activity
             android:name=".RegistryActivity"
             android:parentActivityName=".LoginActivity" />
-        <activity android:name=".RutaDetailActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".RutaDetailActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ZonaActivity"
             android:parentActivityName=".MainActivity" />
@@ -70,8 +71,10 @@
         <activity
             android:name=".insertActivity"
             android:label="@string/title_activity_insert" />
-        <activity android:name=".UserPerfilActivity"
-            android:parentActivityName=".RutaDetailActivity"/>
+        <activity
+            android:name=".UserPerfilActivity"
+            android:parentActivityName=".RutaDetailActivity" />
+        <activity android:name=".CommentActivity"></activity>
     </application>
 
 </manifest>

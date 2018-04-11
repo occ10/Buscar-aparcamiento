@@ -71,7 +71,10 @@
         <b>Comentarios:</b>
     </string>
     <string name="link_to_coments">
-        <strong><b>Ver todos los comentarios</b></strong>
+        <b>Ver todos los comentarios</b>
+    </string>
+    <string name="noComents">
+        No tiene comentarios
     </string>
 
 </resources>

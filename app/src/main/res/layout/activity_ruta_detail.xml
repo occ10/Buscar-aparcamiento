@@ -219,8 +219,7 @@
                 android:paddingLeft="10pt"
                 android:layout_marginTop="05pt"
                 android:textColor="#337AB7"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 

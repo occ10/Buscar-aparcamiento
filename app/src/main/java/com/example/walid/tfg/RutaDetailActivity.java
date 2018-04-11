@@ -40,6 +40,7 @@ public class RutaDetailActivity extends AppCompatActivity {
     private String userRoute;
     private int idRoute;
     private Apua apua;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class RutaDetailActivity extends AppCompatActivity {
                 loadingTask = null;
                 Intent intent = new Intent().setClass(
                         RutaDetailActivity.this, UserPerfilActivity.class);
-                //intent.putExtra("usuario", usuario);
+                intent.putExtra("usuario", usuario);
                 startActivity(intent);
             }
         });
@@ -157,6 +158,7 @@ public class RutaDetailActivity extends AppCompatActivity {
         Ruta ruta = null;
         try {
             ruta = apua.serverAgent.getAnnouncmentFromServer(userRoute, idRoute);
+            usuario = ruta.getUser();
             Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
 
         } catch (Exception e) {

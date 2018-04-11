@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.entities.Car;
+import model.entities.Comment;
 import model.entities.Parking;
 import model.entities.Ruta;
 import model.entities.Usuario;
@@ -39,6 +41,8 @@ public class ServerAgent {
     public static final String DESOCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/desocuppyZone";
     public static final String USEROCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/userOcuppyZone";
     public static final String ANOUNCMENTDETAIL_PATH = "http://10.0.2.2:8080/tfg/rest/AnuncioService/anuncio";
+    public static final String USERCOMMENTS_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comments";
+    public static final String COMMENTSUSERCOMMENTED_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comented";
 
     private Context context;
     private RestHelper restHelper;
@@ -49,7 +53,7 @@ public class ServerAgent {
         this.restHelper = new RestHelper();
     }
 
-    //TODO
+
     public Ruta getAnnouncmentFromServer(String userRoute, int idRoute) throws IOException, NetworkException, JSONException {
 
         RestResponse response =  getResponseFromServer(ANOUNCMENTDETAIL_PATH + "/" + userRoute + "/" + idRoute);
@@ -59,6 +63,7 @@ public class ServerAgent {
         Log.d("announcement jsong", httpContent);
         return httpContent != null ? (Ruta) parser.getJsonObject(httpContent) : null;
     }
+
     public List<Ruta> getRutasOriginFromServer(String email, String origin) throws IOException, NetworkException, JSONException {
 
         RestResponse response =  getResponseFromServer(RUTAS_FROM_ORIGIN_PATH + "/" + email + "/" + origin);
@@ -67,8 +72,19 @@ public class ServerAgent {
         String httpContent = response.getHttpContent();
         Log.d("Apua jsong", httpContent);
         return httpContent != null ? parser.fromJson(httpContent) : null;
-
     }
+
+    public List<Comment> getCommentsFromServer(String email) throws IOException, NetworkException, JSONException {
+
+        RestResponse response =  getResponseFromServer(COMMENTSUSERCOMMENTED_PATH + "/" + email);
+        IParser parser = ParserFactory.newInstance()
+                .getCommentParser();
+        String httpContent = response.getHttpContent();
+        List<Comment> comments = null;
+        Log.d("Apua jsong", httpContent);
+        return comments = (httpContent != null) ? parser.fromJson(httpContent) : null;
+    }
+
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {
 
         RestResponse response =  getResponseFromServer(RUTAS_PATH + "/" + usuario.getEmail());
@@ -78,7 +94,7 @@ public class ServerAgent {
         Log.d("Apua jsong", httpContent);
         return httpContent != null ? parser.fromJson(httpContent) : null;
     }
-    public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario) throws IOException, NetworkException {
+    public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario, Car car) throws IOException, NetworkException {
 
         JSONObject json = new JSONObject();
         try {
@@ -86,9 +102,11 @@ public class ServerAgent {
             json.put("precio", precio);
             json.put("plazas", plazas);
             json.put("detalles", detallesRuta);
-            JSONObject json2 = new JSONObject();
-            json2.put("correo", usuario.getEmail());
-            json.put("user", json2);
+            JSONObject userJson = new JSONObject();
+            userJson.put("correo", usuario.getEmail());
+            json.put("user", userJson);
+            JSONObject routeJson = new JSONObject();
+            json.put("car", routeJson);
             Log.d("Apua jsong insert route", json.toString());
         }catch(JSONException e){
 
