@@ -127,18 +127,26 @@ public class RutaDetailActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
-            case R.id.menu_buscar:
-                Intent intent = new Intent().setClass(
+            case R.id.menuSearch:
+                intent = new Intent().setClass(
                         RutaDetailActivity.this, SearchAnounce.class);
                 startActivity(intent);
                 break;
-            /*case R.id.acercaDe:
-                //lanzarAcercaDe();
-                break;*/
+            case R.id.closeSesion:
+                intent = new Intent().setClass(
+                        RutaDetailActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.editPerfil:
+                intent = new Intent().setClass(
+                        RutaDetailActivity.this, EditPerfilActivity.class);
+                startActivity(intent);
+                break;
         }
         return true;
     }

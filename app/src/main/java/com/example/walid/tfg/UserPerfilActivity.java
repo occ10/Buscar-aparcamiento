@@ -21,12 +21,13 @@ import java.util.List;
 
 import model.Apua;
 import model.entities.Comment;
+import model.entities.Ruta;
 import model.entities.Usuario;
 
 public class UserPerfilActivity extends AppCompatActivity {
     private Boolean QuickFactsExpanded = true;
     private Usuario user = null;
-    private AsyncTask<Void, Void, List<Comment> > loadingTask;
+    private AsyncTask<Void, Void, Void > loadingTask;
     private Apua apua;
     private LinearLayout firstLayoutPerfil;
     private TextView firstCommentPerfil;
@@ -38,7 +39,10 @@ public class UserPerfilActivity extends AppCompatActivity {
     private TextView link_comments;
     private TextView nameFirstCommentPerfil;
     private TextView nameSecondCommentPerfil;
+    private TextView numComents;
+    private TextView numTravels;
     private List<Comment> commentsList = new ArrayList<>();
+    private List<Ruta> rutasList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +66,8 @@ public class UserPerfilActivity extends AppCompatActivity {
         link_comments = (TextView) findViewById(R.id.link_comments);
         nameFirstCommentPerfil = (TextView) findViewById(R.id.nameFirstCommentPerfil);
         nameSecondCommentPerfil = (TextView) findViewById(R.id.nameSecondCommentPerfil);
+        numComents = (TextView) findViewById(R.id.numComents);
+        numTravels = (TextView) findViewById(R.id.numTravels);
 
         userPerfilName.setText(user.getNombre());
         userPerfilFulname.setText(user.getApellido());
@@ -125,23 +131,31 @@ public class UserPerfilActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
                 return true;
-            case R.id.menu_buscar:
-                Intent intent = new Intent().setClass(
+            case R.id.menuSearch:
+                intent = new Intent().setClass(
                         UserPerfilActivity.this, SearchAnounce.class);
                 startActivity(intent);
                 break;
-            /*case R.id.acercaDe:
-                //lanzarAcercaDe();
-                break;*/
+            case R.id.closeSesion:
+                intent = new Intent().setClass(
+                        UserPerfilActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.editPerfil:
+                intent = new Intent().setClass(
+                        UserPerfilActivity.this, EditPerfilActivity.class);
+                startActivity(intent);
+                break;
         }
         return true;
     }
 
-    public class LoadingTask extends AsyncTask<Void, Void, List<Comment>> {
+    public class LoadingTask extends AsyncTask<Void, Void, Void> {
         private Apua apua;
         private String email;
 
@@ -151,23 +165,25 @@ public class UserPerfilActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<Comment> doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
             List<Comment> comments = null;
             try {
-                comments = apua.serverAgent.getCommentsFromServer(email);
-                Log.d("rustas list size", String.valueOf(comments.size()));
+                commentsList = apua.serverAgent.getCommentsFromServer(email);
+                rutasList = apua.serverAgent.getUserRutasFromServer(email);
+                Log.d("rustas list size", String.valueOf(commentsList.size()));
 
             } catch (Exception e) {
                 Log.d("APPUA", "Error trying to log. ", e);
             }
-            return comments;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<Comment> comments) {
+        protected void onPostExecute(Void v) {
             loadingTask = null;
-            commentsList = comments;
-            if (comments.size() > 0) {
+            numTravels.setText(String.valueOf(rutasList.size()) + " Viajes publicados");
+            numComents.setText(String.valueOf(commentsList.size()) + " Comentarios Recibidos");
+            if (commentsList.size() > 0) {
                 comentInfoTextPerfil.setVisibility(View.GONE);
                 downButtonPerfil.setVisibility(View.VISIBLE);
 

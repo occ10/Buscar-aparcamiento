@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
-    <item android:id="@+id/config"
-        android:title="@string/btn_configurar"
+    <item android:id="@+id/editPerfil"
+        android:title="@string/edit_perfil"
         android:orderInCategory="95"
         app:showAsAction="never">
     </item>
-    <item android:id="@+id/config2"
-        android:title="@string/btn_configurar"
+    <item android:id="@+id/searchUser"
+        android:title="@string/search_user"
         android:orderInCategory="95"
         app:showAsAction="never">
     </item>
-    <item android:id="@+id/cerrarSesion"
-        android:title="@string/cerrar_sesion"
+    <item android:id="@+id/closeSesion"
+        android:title="@string/close_sesion"
         android:orderInCategory="95"
         app:showAsAction="never">
     </item>
-    <item android:id="@+id/menu_buscar"
+    <item android:id="@+id/menuSearch"
         app:showAsAction="always|collapseActionView"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/buscar"

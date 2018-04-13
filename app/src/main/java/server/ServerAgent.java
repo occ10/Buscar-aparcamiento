@@ -35,6 +35,7 @@ public class ServerAgent {
     public static final String RUTA_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/insertRoute";
     public static final String RUTAS_FROM_ORIGIN_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routesOrigine";
     public static final String RUTAS_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routes";
+    public static final String RUTASUSER_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routesUser";
     public static final String PARKINGS_PATH = "http://10.0.2.2:8080/tfg/rest/ParkingService/parking";
     public static final String ZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zona";
     public static final String UPDATEZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/updateZone";
@@ -94,6 +95,17 @@ public class ServerAgent {
         Log.d("Apua jsong", httpContent);
         return httpContent != null ? parser.fromJson(httpContent) : null;
     }
+
+    public List<Ruta> getUserRutasFromServer(String email) throws IOException, NetworkException, JSONException {
+        List<Ruta> rutas = null;
+        RestResponse response =  getResponseFromServer(RUTASUSER_PATH + "/" + email);
+        IParser parser = ParserFactory.newInstance()
+                .getRutaParser();
+        String httpContent = response.getHttpContent();
+        Log.d("Apua jsong", httpContent);
+        return rutas = (httpContent != null) ? parser.fromJson(httpContent) : null;
+    }
+
     public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario, Car car) throws IOException, NetworkException {
 
         JSONObject json = new JSONObject();

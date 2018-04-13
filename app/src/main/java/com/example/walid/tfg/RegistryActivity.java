@@ -444,18 +444,18 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
         @Override
         protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
-
+            loadingTaskRegister = null;
             if (success) {
                 Intent intent = new Intent().setClass(
-                        RegistryActivity.this, MainActivity.class);
+                        RegistryActivity.this, LoginActivity.class);
                 intent.putExtra("usuario", usuario);
                 startActivity(intent);
                 Toast.makeText(RegistryActivity.this,
-                        "El registro se ha hecho correctamente.",
+                        "El registro se ha hecho correctamente. Debes confirmar tu registro mediante el correo enviado a su cuenta de correo",
                         Toast.LENGTH_LONG).show();
                 finish();
             } else {
-                loadingTaskRegister = null;
+                showProgress(false);
                 Toast.makeText(RegistryActivity.this,
                         "Error en el servidor, intentalo mas tarde.",
                         Toast.LENGTH_SHORT).show();
