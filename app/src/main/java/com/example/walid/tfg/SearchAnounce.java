@@ -130,14 +130,26 @@ public class SearchAnounce extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
-                //Write your logic here
                 this.finish();
                 return true;
-            /*case R.id.acercaDe:
-                //lanzarAcercaDe();
-                break;*/
+            case R.id.menuSearch:
+                intent = new Intent().setClass(
+                        SearchAnounce.this, SearchAnounce.class);
+                startActivity(intent);
+                break;
+            case R.id.closeSesion:
+                intent = new Intent().setClass(
+                        SearchAnounce.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.editPerfil:
+                intent = new Intent().setClass(
+                        SearchAnounce.this, EditPerfilActivity.class);
+                startActivity(intent);
+                break;
         }
         return true;
     }

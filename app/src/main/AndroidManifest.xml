@@ -74,7 +74,12 @@
         <activity
             android:name=".UserPerfilActivity"
             android:parentActivityName=".RutaDetailActivity" />
-        <activity android:name=".CommentActivity"></activity>
+        <activity
+            android:name=".CommentActivity"
+            android:parentActivityName=".UserPerfilActivity" />
+        <activity
+            android:name=".EditPerfilActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

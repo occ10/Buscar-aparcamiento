@@ -64,27 +64,6 @@ public class AnouncesList extends AppCompatActivity {
         super.onResume();
     }
 
-    /*public RecyclerView getRecyclerView() {
-        if (recyclerView == null) {
-            synchronized (AnouncesList.class) {
-                if (recyclerView == null) {
-                    recyclerView = new RecyclerView(this);
-                    recyclerView.setHasFixedSize(true);
-                    setContentView(recyclerView);
-                }
-            }
-        }
-        return(recyclerView);
-    }
-    public void setAdapter(RecyclerView.Adapter adapter) {
-        getRecyclerView().setAdapter(adapter);
-    }
-    public RecyclerView.Adapter getAdapter() {
-        return(getRecyclerView().getAdapter());
-    }
-    public void setLayoutManager(RecyclerView.LayoutManager manager) {
-        getRecyclerView().setLayoutManager(manager);
-    }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu;
@@ -95,13 +74,24 @@ public class AnouncesList extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
-                //Write your logic here
                 this.finish();
                 return true;
-            case R.id.menu_buscar:
-                Intent intent = new Intent().setClass(AnouncesList.this, SearchAnounce.class);
+            case R.id.menuSearch:
+                intent = new Intent().setClass(
+                        AnouncesList.this, SearchAnounce.class);
+                startActivity(intent);
+                break;
+            case R.id.closeSesion:
+                intent = new Intent().setClass(
+                        AnouncesList.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.editPerfil:
+                intent = new Intent().setClass(
+                        AnouncesList.this, EditPerfilActivity.class);
                 startActivity(intent);
                 break;
         }
