@@ -14,12 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import model.Apua;
 import model.entities.Car;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 public class InsertUserCarActivity extends Fragment {
 
@@ -47,6 +48,7 @@ public class InsertUserCarActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_insert_user_car, container, false);
+
         car = new Car();
         carRegistration = (TextView) view.findViewById(R.id.carRegistration);
         insertCarButton = (Button) view.findViewById(R.id.insertCarButton);

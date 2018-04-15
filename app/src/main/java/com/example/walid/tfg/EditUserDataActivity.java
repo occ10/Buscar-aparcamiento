@@ -1,16 +1,13 @@
 package com.example.walid.tfg;
 
+import android.support.v4.app.Fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,11 +17,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import model.Apua;
 import model.entities.Usuario;
-
-import static android.content.ContentValues.TAG;
 
 public class EditUserDataActivity extends Fragment {
 
@@ -32,7 +26,6 @@ public class EditUserDataActivity extends Fragment {
     private AutoCompleteTextView apellido;
     private AutoCompleteTextView mEmailView;
     private EditText telefono;
-    private EditText mPasswordView;
     private EditText edad;
     private EditText descripcion;
     private ProgressBar mProgressBar;

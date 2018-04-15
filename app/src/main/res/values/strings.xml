@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">APPUA</string>
-
-    <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password </string>
     <string name="action_sign_in">"Iniciar sesion"</string>
