@@ -161,36 +161,36 @@ public class RutaDetailActivity extends AppCompatActivity {
             this.userRoute = userRoute;
             this.idRoute = idRoute;
         }
-    @Override
-    protected Ruta doInBackground(Void... voids) {
-        Ruta ruta = null;
-        try {
-            ruta = apua.serverAgent.getAnnouncmentFromServer(userRoute, idRoute);
-            usuario = ruta.getUser();
-            Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
+        @Override
+        protected Ruta doInBackground(Void... voids) {
+            Ruta ruta = null;
+            try {
+                ruta = apua.serverAgent.getAnnouncmentFromServer(userRoute, idRoute);
+                usuario = ruta.getUser();
+                Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
 
-        } catch (Exception e) {
-            Log.d("APPUA", "Error trying to log. ", e);
+            } catch (Exception e) {
+                Log.d("APPUA", "Error trying to log. ", e);
+            }
+            return ruta;
         }
-        return ruta;
-    }
 
-    @Override
-    protected void onPostExecute(Ruta ruta) {
-        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+        @Override
+        protected void onPostExecute(Ruta ruta) {
+            DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 
-        Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
-        departureView.setText(ruta.getOrigen());
-        priceRouteView.setText(String.valueOf(ruta.getPrecio()) + " €");
-        placesRouteView.setText(String.valueOf(ruta.getPlazas()) + " disponibles");
-        publicationDateView.setText(df.format(ruta.getFechaPublicacion()));
-        routeDetailView.setText(ruta.getDetalles());
-        nameUserView.setText(ruta.getUser().getNombre());
-        fullNameUserView.setText(ruta.getUser().getApellido());
-        ageUserView.setText(String.valueOf(ruta.getUser().getEdad()) + " años");
-        carModelView.setText(ruta.getCar().getBrand());
-        carCategoryView.setText("Categoria: " + ruta.getCar().getCategory());
-        carColorView.setText("Color: " + ruta.getCar().getColor());
+            Log.d("APPUA ruta plazas",  String.valueOf(ruta.getPlazas()));
+            departureView.setText(ruta.getOrigen());
+            priceRouteView.setText(String.valueOf(ruta.getPrecio()) + " €");
+            placesRouteView.setText(String.valueOf(ruta.getPlazas()) + " disponibles");
+            publicationDateView.setText(df.format(ruta.getFechaPublicacion()));
+            routeDetailView.setText(ruta.getDetalles());
+            nameUserView.setText(ruta.getUser().getNombre());
+            fullNameUserView.setText(ruta.getUser().getApellido());
+            ageUserView.setText(String.valueOf(ruta.getUser().getEdad()) + " años");
+            carModelView.setText(ruta.getCar().getBrand());
+            carCategoryView.setText("Categoria: " + ruta.getCar().getCategory());
+            carColorView.setText("Color: " + ruta.getCar().getColor());
+        }
     }
-}
 }

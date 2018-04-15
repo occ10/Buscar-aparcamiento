@@ -11,8 +11,7 @@
     <string name="error_invalid_price">This price is invalid</string>
     <string name="error_invalid_place">This number of place is incorrect</string>
     <string name="error_invalid_detallesRuta">This details is invalid</string>
-
-
+    <string name="error_invalid_registration">This registration is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_invalid_mobile">This mobil is incorrect</string>
@@ -27,6 +26,7 @@
     <string name="btn_acerca_de"> Creca de </string>
     <string name="buscar"> Buscar </string>
     <string name="action_register_in"> Registrate </string>
+    <string name="action_edit_in"> Actualizar </string>
     <string name="Nombre"> Nombre </string>
     <string name="Apellido"> Apellido </string>
     <string name="telefono"> Telefono </string>
@@ -52,36 +52,82 @@
 
     <string name="lin_to_perfil">Ver perfil</string>
     <string name="close_sesion"><b>Cerrar sesion</b></string>
-    <string name="info_message_search">
-        <strong>Info!</strong> No hay resultados para esta busqueda
-    </string>
-    <string name="activity">
-        <b>Actividad</b>
-    </string>
-    <string name="detailName">
-        <strong>Detalles:</strong>
-    </string>
-    <string name="mobil">
-        <strong>Tel:</strong>
-    </string>
-    <string name="email">
-        <strong>Correo:</strong>
-    </string>
-    <string name="coments">
-        <b>Comentarios:</b>
-    </string>
-    <string name="link_to_coments">
-        <b>Ver todos los comentarios</b>
-    </string>
-    <string name="noComents">
-        No tiene comentarios
-    </string>
-    <string name="edit_perfil">
-        <b>Editar perfil</b>
-    </string>
-    <string name="search_user">
-        <b>Buscar usuario</b>
-    </string>
-
-
+    <string name="info_message_search"><strong>Info!</strong> No hay resultados para esta busqueda</string>
+    <string name="activity"><b>Actividad</b></string>
+    <string name="detailName"><strong>Detalles:</strong></string>
+    <string name="mobil"><strong>Tel:</strong></string>
+    <string name="email"><strong>Correo:</strong></string>
+    <string name="coments"><b>Comentarios:</b></string>
+    <string name="link_to_coments"><b>Ver todos los comentarios</b></string>
+    <string name="noComents">No tiene comentarios</string>
+    <string name="edit_perfil"><b>Editar perfil</b></string>
+    <string name="search_user"><b>Buscar usuario</b></string>
+    <string name="description"><b>Descripcion</b></string>
+    <string name="registration"><b>Matricula</b>:</string>
+    <string name="registrationExample"><b>Ejemplo 2314BKK</b></string>
+    <string name="brand"><b>Marca</b>:</string>
+    <string name="model"><b>Modelo</b>:</string>
+    <string name="color"><b>Color</b>:</string>
+    <string name="category"><b>Categoria</b>:</string>
+    <string name="seating"><b>Acientos</b>:</string>
+    <string name="insert">INSERTAR</string>
+    <string-array name="car_brand">
+        <item>A15</item>
+        <item>AUDI</item>
+        <item>CHEVROLET</item>
+        <item>CITROEN</item>
+        <item>DACIA</item>
+        <item>DAEWOO</item>
+        <item>DAIHATSU</item>
+        <item>FIAT</item>
+        <item>FORD</item>
+        <item>GOLF</item>
+        <item>HONDA</item>
+        <item>IVECO</item>
+        <item>JEEP</item>
+        <item>KIA</item>
+        <item>LANCIA</item>
+        <item>LAND ROVER</item>
+        <item>MAZDA</item>
+        <item>MERCEDES</item>
+        <item>MITSIBUSHI</item>
+        <item>NISSAN</item>
+        <item>OPEL</item>
+        <item>PEUGOET</item>
+        <item>RENAULT</item>
+    </string-array>
+    <string-array name="car_model">
+        <item>10</item>
+        <item>11</item>
+        <item>14</item>
+        <item>18</item>
+        <item>19</item>
+        <item>21</item>
+        <item>25</item>
+        <item>30</item>
+        <item>40</item>
+    </string-array>
+    <string-array name="car_color">
+        <item>BLANCO</item>
+        <item>NEGRO</item>
+        <item>AMARILLO</item>
+        <item>VERDA</item>
+        <item>ROJO</item>
+        <item>AZUL</item>
+        <item>GRIS</item>
+    </string-array>
+    <string-array name="car_category">
+        <item>TURISMO</item>
+        <item>4X4</item>
+        <item>FAMILIAR</item>
+        <item>MONOVOLUMEN</item>
+    </string-array>
+    <string-array name="car_seating">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 </resources>

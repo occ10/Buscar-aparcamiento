@@ -175,9 +175,6 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
      * errors are presented and no actual login attempt is made.
      */
     private void attemptRegister() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -191,11 +188,11 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String nombre2 = nombre.getText().toString();
-        String apellido2 = apellido.getText().toString();
-        String edad2 = edad.getText().toString();
-        String descripcion2 = descripcion.getText().toString();
-        String telefono2 = telefono.getText().toString();
+        String name = nombre.getText().toString();
+        String fullName = apellido.getText().toString();
+        String age = edad.getText().toString();
+        String description = descripcion.getText().toString();
+        String mobilPhone = telefono.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -211,31 +208,31 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
             focusView = mPasswordView;
             cancel = true;
         }
-        if (TextUtils.isEmpty(telefono2)) {
+        if (TextUtils.isEmpty(mobilPhone)) {
             telefono.setError(getString(R.string.error_field_required));
             focusView = telefono;
             cancel = true;
         }
         // Check for a valid password, if the user entered one.
-        else if ( !isMobileValid(telefono2)) {
+        else if ( !isMobileValid(mobilPhone)) {
             telefono.setError(getString(R.string.error_invalid_mobile));
             focusView = telefono;
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(edad2)) {
+        if (TextUtils.isEmpty(age)) {
             edad.setError(getString(R.string.error_field_required));
             focusView = edad;
             cancel = true;
         }
         // Check for a valid password, if the user entered one.
-        else if ( !isAgeValid(edad2)) {
+        else if ( !isAgeValid(age)) {
             edad.setError(getString(R.string.error_invalid_age));
             focusView = edad;
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(descripcion2)) {
+        if (TextUtils.isEmpty(description)) {
             descripcion.setError(getString(R.string.error_field_required));
             focusView = descripcion;
             cancel = true;
@@ -252,12 +249,12 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
             cancel = true;
         }
         // Check for a valid name address.
-        if (TextUtils.isEmpty(nombre2)) {
+        if (TextUtils.isEmpty(name)) {
             nombre.setError(getString(R.string.error_field_required));
             focusView = nombre;
             cancel = true;
         }
-        if (TextUtils.isEmpty(apellido2)) {
+        if (TextUtils.isEmpty(fullName)) {
             apellido.setError(getString(R.string.error_field_required));
             focusView = nombre;
             cancel = true;
@@ -272,12 +269,10 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
             // perform the user login attempt.
             showProgress(true);
             final Apua apua =  new Apua(this);
-
-
             if (loadingTaskRegister == null) {
-                loadingTaskRegister = new LoadingTask(apua,nombre.getText().toString(),apellido.getText().toString(), mEmailView.getText().toString(),
-                        mPasswordView.getText().toString()
-                        ,telefono.getText().toString() ,edad.getText().toString(),descripcion.getText().toString());
+                loadingTaskRegister = new LoadingTask(apua,name,fullName, email,
+                        password
+                        ,mobilPhone ,age,description);
 
                 loadingTaskRegister.execute();
             }
