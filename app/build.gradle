@@ -34,5 +34,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:26.+'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.+'
-
+    compile 'net.gotev:uploadservice:2.+'
 }
