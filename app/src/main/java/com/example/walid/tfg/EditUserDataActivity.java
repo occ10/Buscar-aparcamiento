@@ -17,6 +17,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import model.Apua;
 import model.entities.Usuario;
 
@@ -314,6 +316,7 @@ public class EditUserDataActivity extends Fragment {
                 switch(action) {
                     case "update":
                         Log.d("APPUA", "Los datos se han actualizado correctamente");
+                        Toast.makeText(getActivity(), "Los datos se han actualizado correctamente ", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 //Log.d("APPUA", "Los datos se han actualizado correctamente");

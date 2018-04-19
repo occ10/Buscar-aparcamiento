@@ -11,6 +11,8 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -135,6 +137,26 @@ public class RestHelper {
         }
     }
 
+    public RestResponse insertImage(Context context, String url, Map<String, String> headers, String filaImage)
+            throws IOException, NetworkException {
+
+        if (!checkConnectivity(context)) {
+            throw new NetworkException(ERR_CONN_MSG);
+        }
+
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = getConnection(url, "PUT", headers);
+            writePutImage(urlConnection, filaImage);
+            RestResponse response = connect(urlConnection);
+            return response;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+    }
+
     public RestResponse delete(Context context, String url, Map<String, String> headers)
             throws IOException, NetworkException  {
 
@@ -182,6 +204,63 @@ public class RestHelper {
         }
     }
 
+    private void writePutImage(HttpURLConnection urlConnection, String imageFile) throws IOException {
+        DataOutputStream dos = null;
+        String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
+        FileInputStream fileInputStream = new FileInputStream(new File(imageFile));
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        try {
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            dos = new DataOutputStream(urlConnection.getOutputStream());
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+                /*dos.writeBytes("Content-Disposition: form-data; name=\"title\""+ lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(Title);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + lineEnd);*/
+
+            dos.writeBytes("Content-Disposition: form-data; name=\"email\""+ lineEnd);
+            dos.writeBytes(lineEnd);
+            dos.writeBytes("kkk@kkk.com");
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                    + fileName + "\"" + lineEnd);
+            dos.writeBytes("Content-Type: image/*" + lineEnd);
+            dos.writeBytes(lineEnd);
+            // create a buffer of  maximum size
+            bytesAvailable = fileInputStream.available();
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+            // read file and write it into form...
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead > 0) {
+
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            }
+            // send multipart form data necesssary after file data...
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            fileInputStream.close();
+            dos.flush();
+        } finally {
+            if (dos != null) {
+                dos.close();
+            }
+        }
+    }
 
    /*private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
         InputStream is = null;

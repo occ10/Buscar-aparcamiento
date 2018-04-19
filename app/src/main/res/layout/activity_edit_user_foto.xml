@@ -20,12 +20,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Button"/>
+        android:radius="10dp"
+        android:background="@drawable/rounded_btn"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:text="@string/selectImage"/>
 
     <Button
         android:id="@+id/uploadUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Button"/>
+        android:radius="10dp"
+        android:textColor="@color/white"
+        android:background="@drawable/rounded_btn"
+        android:layout_marginTop="10dp"
+        android:text="@string/insertImage"/>
+    <Button
+        android:id="@+id/deleteUserButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:radius="10dp"
+        android:background="@drawable/rounded_btn"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:text="@string/deleteImage"
+        android:visibility="gone"/>
 </LinearLayout>

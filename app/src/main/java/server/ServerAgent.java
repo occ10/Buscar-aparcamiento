@@ -2,7 +2,12 @@ package server;
 
 import android.content.Context;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +36,7 @@ public class ServerAgent {
     public static final String ZONAS_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zonas";
     public static final String LOGIN_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/user";
     public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
+    public static final String FOTO_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/saveFile";
     public static final String UPDATEUSUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/update";
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
     public static final String RUTA_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/insertRoute";
@@ -376,6 +382,34 @@ public class ServerAgent {
                     .append(response.getHttpContent())
                     .toString());
         }
+        return true;
+    }
+
+    public boolean sendImage(String email, String imageFile) throws IOException, NetworkException {
+
+        String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
+        String boundary = "*****";
+
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Connection", "Keep-Alive");
+        headers.put("Content-Type", "multipart/form-data;boundary="+boundary);
+        headers.put("Connection", "Keep-Alive");
+        headers.put("Cache-Control", "no-cache");
+        headers.put("ENCTYPE", "multipart/form-data");
+        headers.put("uploaded_file", fileName);
+
+        RestResponse response = restHelper.insertImage(context, FOTO_USUARIO_PATH, headers, imageFile);
+        if (response.getHttpResponseCode() == 400) {
+            return false;
+        }else if(response.getHttpResponseCode() != 201){
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+
         return true;
     }
 }

@@ -69,6 +69,9 @@
     <string name="category"><b>Categoria</b>:</string>
     <string name="seating"><b>Acientos</b>:</string>
     <string name="insert">INSERTAR</string>
+    <string name="selectImage">SELECCIONAR IMAGEN</string>
+    <string name="insertImage">INSERTAR IMAGEN</string>
+    <string name="deleteImage">BORRAR IMAGEN</string>
     <string-array name="car_brand">
         <item>A15</item>
         <item>AUDI</item>

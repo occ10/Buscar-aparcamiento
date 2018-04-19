@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            boolean success;
+            boolean success = false;
 
             try {
 
@@ -374,15 +374,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 if (success) {
                     usuario = apua.serverAgent.getUser(email);
-                    /*if (usuario.getConfirmado().equalsIgnoreCase("si")) {
-                        session.createLoginSession(usuario.getNombre(), usuario.getEmail());
-                    Log.d("Apua", "Comprobado correctamente " + usuario.getConfirmado());
-                    } else {
-
-                        Toast.makeText(LoginActivity.this,
-                                "debes confirmar tu registro en el correo enviado ",
-                                Toast.LENGTH_SHORT).show();
-                    }*/
                 }
             } catch (Exception e) {
                 success = false;
