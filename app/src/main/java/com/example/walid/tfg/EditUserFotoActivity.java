@@ -1,6 +1,9 @@
 package com.example.walid.tfg;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -10,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.SyncStateContract;
@@ -28,6 +32,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
@@ -40,21 +51,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import model.Apua;
+import model.entities.Usuario;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 public class EditUserFotoActivity extends Fragment implements View.OnClickListener {
-    AsyncTask<Void, Void, Void> loadingTask;
+    AsyncTask<Void, Void, Boolean> loadingTask;
     private static int RESULT_LOAD_IMAGE = 1;
     private Button buttonChoose;
     private Button buttonUpload;
+    private Button deleteUserButton;
     private ImageView imageView;
     private EditText editText;
-    //Uri to store the image uri
     private Uri filePath;
-    //private static final String UPLOAD_URL = "http://10.0.2.2:8080/tfg/rest/UserService/saveFile";
+    private View mProgressView;
+    private View insertUserImageView;
+    public static final String IMAGE_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/getImage/";
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -69,31 +84,84 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
         //Initializing views
         buttonChoose = (Button) view.findViewById(R.id.selectUserButton);
         buttonUpload = (Button) view.findViewById(R.id.uploadUserButton);
+        deleteUserButton = (Button) view.findViewById(R.id.deleteUserButton);
         imageView = (ImageView) view.findViewById(R.id.editUserImage);
+        insertUserImageView = view.findViewById(R.id.insertFotoLayout);
+        mProgressView = view.findViewById(R.id.insertFotoProgress);
+        int radius = 60; // corner radius, higher value = more rounded
+        int margin = 10; // crop margin, set to 0 for corners with no crop
+        /*Glide.with(getActivity())
+                .load(IMAGE_PATH + "kkk@kkk.com")
+                .override(1200, 1200)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .bitmapTransform(new RoundedCornersTransformation(getActivity(), radius, margin))
+                .placeholder(R.drawable.unkonwnfoto)
+                .error(R.drawable.unkonwnfoto)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        // log exception
+                        Log.e("TAG", "Error loading image eeeeeeeeeeeeee", e);
+                        return false; // important to return false so the error placeholder can be placed
+                    }
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        buttonChoose.setVisibility(View.GONE);
+                        buttonUpload.setVisibility(View.GONE);
+                        deleteUserButton.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                })
+                .into(imageView);*/
+        showProgress(true);
+        Picasso.with(getActivity()).load(IMAGE_PATH + "kkk@kkk.com").centerCrop()
+        //.placeholder(R.drawable.unkonwnfoto)
+        .error(R.drawable.unkonwnfoto)
+        .resize(800,1200)
+        .into(imageView, new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                showProgress(false);
+                buttonChoose.setVisibility(View.GONE);
+                buttonUpload.setVisibility(View.GONE);
+                deleteUserButton.setVisibility(View.VISIBLE);
+            }
 
+            @Override
+            public void onError() {
+                showProgress(false);
+            }
+        });
         //Setting clicklistener
         buttonChoose.setOnClickListener(this);
         buttonUpload.setOnClickListener(this);
+        deleteUserButton.setOnClickListener(this);
 
         return view;
     }
     @Override
     public void onClick(View v) {
+        final Apua apua = new Apua(getActivity());
         String imageFile = "";
         if (v == buttonChoose) {
             showFileChooser();
         }
-        if (v == buttonUpload) {
-            final Apua apua = new Apua(getActivity());
+        else if (v == buttonUpload) {
             imageFile = getPathFromURI(filePath);
             if (loadingTask == null) {
-                loadingTask = new LoadingTask(apua,imageFile);
+                showProgress(true);
+                loadingTask = new LoadingTask(apua,imageFile,"insert");
+                loadingTask.execute();
+            }
+        }else{
+            //imageFile = getPathFromURI(filePath);
+            if (loadingTask == null) {
+                showProgress(true);
+                loadingTask = new LoadingTask(apua,imageFile,"del");
                 loadingTask.execute();
             }
         }
-        Toast.makeText(getActivity(), "se ha hecho click en el button", Toast.LENGTH_SHORT).show();
-        // Start the Intent
-        //startActivityFromFragment(galleryIntent,RESULT_LOAD_IMG);
     }
 
     private void showFileChooser() {
@@ -112,6 +180,7 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
+                buttonUpload.setVisibility(View.VISIBLE);
                 Log.d(TAG, "onActivityResult: image uri: " + filePath);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -137,29 +206,96 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
         return path;
     }
 
-    public class LoadingTask extends AsyncTask<Void, Void, Void> {
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            insertUserImageView.setVisibility(show ? View.GONE : View.VISIBLE);
+            insertUserImageView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    insertUserImageView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            insertUserImageView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public class LoadingTask extends AsyncTask<Void, Void, Boolean> {
         private Apua apua;
         private String imageFile;
-        public LoadingTask(Apua apua, String imageFile) {
+        private String action;
+
+        public LoadingTask(Apua apua, String imageFile, String action) {
             this.apua = apua;
             this.imageFile = imageFile;
+            this.action = action;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            boolean result;
+        protected Boolean doInBackground(Void... voids) {
+            boolean result = false;
+            Usuario user ;
             try {
-                result =  apua.serverAgent.sendImage("kkk@kkk.com", imageFile);
+                switch(action) {
+                    case "insert":
+                    result = apua.serverAgent.sendImage("kkk@kkk.com", imageFile);
+                    break;
+
+                    case "del":
+                        user = new Usuario();
+                        user.setEmail("kkk@kkk.com");
+                        result = apua.serverAgent.deleteImage(user);
+                        break;
+
+                }
 
             } catch (Exception e) {
                 Log.d("UNIVERSITY", "Error trying to send image file. ", e);
             }
-            return null;
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Void avoid) {
+        protected void onPostExecute(Boolean result) {
+            showProgress(false);
             loadingTask = null;
+            if(result){
+                switch(action) {
+                    case "insert":
+                        buttonChoose.setVisibility(View.GONE);
+                        buttonUpload.setVisibility(View.GONE);
+                        deleteUserButton.setVisibility(View.VISIBLE);
+                        break;
+                    case "del":
+                        imageView.setImageResource(R.drawable.unkonwnfoto);
+                        buttonChoose.setVisibility(View.VISIBLE);
+                        deleteUserButton.setVisibility(View.GONE);
+                        break;
+
+                }
+            }
         }
     }
 }

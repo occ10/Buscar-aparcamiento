@@ -11,7 +11,10 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,6 +23,8 @@ import java.util.List;
 import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
+
+import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class RutaDetailActivity extends AppCompatActivity {
     Boolean QuickFactsExpanded = true;
@@ -36,6 +41,7 @@ public class RutaDetailActivity extends AppCompatActivity {
     private TextView carModelView;
     private TextView carCategoryView;
     private TextView carColorView;
+    private ImageView routeDetaiUser;
     private Boolean onresumeFirstCall = false;
     private String userRoute;
     private int idRoute;
@@ -62,6 +68,7 @@ public class RutaDetailActivity extends AppCompatActivity {
         carModelView = (TextView) findViewById(R.id.carModel);
         carCategoryView = (TextView) findViewById(R.id.carCategory);
         carColorView = (TextView) findViewById(R.id.carColor);
+        routeDetaiUser = (ImageView) findViewById(R.id.routeDetaiUser);
 
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua, userRoute, idRoute);
@@ -191,6 +198,17 @@ public class RutaDetailActivity extends AppCompatActivity {
             carModelView.setText(ruta.getCar().getBrand());
             carCategoryView.setText("Categoria: " + ruta.getCar().getCategory());
             carColorView.setText("Color: " + ruta.getCar().getColor());
+            Picasso.with(RutaDetailActivity.this).load(IMAGE_PATH + ruta.getUser().getEmail())
+            .error(R.drawable.unkonwnfoto)
+            .into(routeDetaiUser, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+                @Override
+                public void onError() {
+                }
+            });
         }
     }
 }

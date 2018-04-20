@@ -16,12 +16,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
+
+import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class AnouncesList extends AppCompatActivity {
 
@@ -130,7 +134,7 @@ public class AnouncesList extends AppCompatActivity {
         }
 
     }
-    static class FilaHolder extends RecyclerView.ViewHolder {
+    class FilaHolder extends RecyclerView.ViewHolder {
         public Ruta ruta;
         public final View mView ;
         public final ImageView icono;
@@ -163,7 +167,20 @@ public class AnouncesList extends AppCompatActivity {
             cardPrecioPlaza.setText("Precio:" + String.valueOf(route.getPrecio()));
             cardPlazasDisponible.setText("Plazas disponibles:" + String.valueOf(route.getPlazas() - route.getPlazasOcupadas()));
             //cardApellidoUsuario.setText(String.format(template, item.length()));
-            icono.setImageResource(R.drawable.unkonwnfoto);
+            //icono.setImageResource(R.drawable.unkonwnfoto);
+            Picasso.with(AnouncesList.this).load(IMAGE_PATH + route.getUser().getEmail())
+            //.placeholder(R.drawable.unkonwnfoto)
+            .error(R.drawable.unkonwnfoto)
+            //.resize(800,1400)
+            .into(icono, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+                @Override
+                public void onError() {
+                }
+            });
 
         }
     }

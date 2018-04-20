@@ -10,9 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -23,6 +26,8 @@ import model.Apua;
 import model.entities.Comment;
 import model.entities.Ruta;
 import model.entities.Usuario;
+
+import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class UserPerfilActivity extends AppCompatActivity {
     private Boolean QuickFactsExpanded = true;
@@ -41,6 +46,7 @@ public class UserPerfilActivity extends AppCompatActivity {
     private TextView nameSecondCommentPerfil;
     private TextView numComents;
     private TextView numTravels;
+    private ImageView userPerfilImage;
     private List<Comment> commentsList = new ArrayList<>();
     private List<Ruta> rutasList = new ArrayList<>();
     @Override
@@ -68,12 +74,26 @@ public class UserPerfilActivity extends AppCompatActivity {
         nameSecondCommentPerfil = (TextView) findViewById(R.id.nameSecondCommentPerfil);
         numComents = (TextView) findViewById(R.id.numComents);
         numTravels = (TextView) findViewById(R.id.numTravels);
+        userPerfilImage = (ImageView) findViewById(R.id.userPerfilImage);
 
         userPerfilName.setText(user.getNombre());
         userPerfilFulname.setText(user.getApellido());
         userPerfilAge.setText(String.valueOf(user.getEdad()) + "años");
         userTelPerfil.setText("Tel: " + user.getTelefono());
         userEmailPerfil.setText("Correo: " + user.getEmail());
+        Picasso.with(UserPerfilActivity.this).load(IMAGE_PATH + user.getEmail()).centerCrop()
+        //.placeholder(R.drawable.unkonwnfoto)
+        .error(R.drawable.unkonwnfoto)
+        .resize(800,800)
+        .into(userPerfilImage, new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+            @Override
+            public void onError() {
+            }
+        });
 
         apua =  new Apua(this);
         if (loadingTask == null) {

@@ -13,10 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import model.entities.Comment;
+
+import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class CommentActivity extends AppCompatActivity {
     private List<Comment> commentsList =new ArrayList<>();
@@ -91,7 +95,7 @@ public class CommentActivity extends AppCompatActivity {
         }
 
     }
-    static class FilaHolder extends RecyclerView.ViewHolder {
+    class FilaHolder extends RecyclerView.ViewHolder {
         public Comment comment;
         public final View mView ;
         public final TextView comentsContents;
@@ -107,6 +111,18 @@ public class CommentActivity extends AppCompatActivity {
         private void bindModel(Comment comment) {
             comentsContents.setText(comment.getComment());
             icono.setImageResource(R.drawable.unkonwnfoto);
+            Picasso.with(CommentActivity.this).load(IMAGE_PATH + comment.getUserComment())
+            .error(R.drawable.unkonwnfoto)
+            //.resize(800,800)
+            .into(icono, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+                @Override
+                public void onError() {
+                }
+            });
 
         }
     }

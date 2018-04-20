@@ -135,6 +135,7 @@
                 android:background="@drawable/border_bottom">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/routeDetaiUser"
                     android:src="@drawable/unkonwnfoto"
                     android:layout_width="60dp"
                     android:layout_height="60dp" />

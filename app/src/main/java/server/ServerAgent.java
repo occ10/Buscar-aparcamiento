@@ -51,6 +51,7 @@ public class ServerAgent {
     public static final String ANOUNCMENTDETAIL_PATH = "http://10.0.2.2:8080/tfg/rest/AnuncioService/anuncio";
     public static final String USERCOMMENTS_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comments";
     public static final String COMMENTSUSERCOMMENTED_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comented";
+    public static final String DELETE_IMAGE_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/deleteImage";
 
     private Context context;
     private RestHelper restHelper;
@@ -335,6 +336,30 @@ public class ServerAgent {
         return true;
     }
 
+    public boolean deleteImage(Usuario user) throws IOException, NetworkException, JSONException {
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("correo", user.getEmail());
+        }catch(JSONException e){
+
+        }
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-type", "application/json");
+
+        RestResponse response = restHelper.put(context, DELETE_IMAGE_USUARIO_PATH, headers, json.toString());
+        if (response.getHttpResponseCode() != 204) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        return true;
+    }
+
     public RestResponse getResponseFromServer(String path) throws IOException, NetworkException {
         RestResponse response = restHelper.get(context, path, null);
         if (response.getHttpResponseCode() != 200 && response.getHttpResponseCode() != 404) {
@@ -401,7 +426,7 @@ public class ServerAgent {
         RestResponse response = restHelper.insertImage(context, FOTO_USUARIO_PATH, headers, imageFile);
         if (response.getHttpResponseCode() == 400) {
             return false;
-        }else if(response.getHttpResponseCode() != 201){
+        }else if(response.getHttpResponseCode() != 200){
             throw new NetworkException(new StringBuilder()
                     .append("HttpCode: ")
                     .append(response.getHttpResponseCode())

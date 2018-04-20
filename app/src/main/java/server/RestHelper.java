@@ -262,22 +262,7 @@ public class RestHelper {
         }
     }
 
-   /*private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
-        InputStream is = null;
-        try {
-            int code = urlConnection.getResponseCode();
-            is = (code == HttpURLConnection.HTTP_OK) ?
-                    urlConnection.getInputStream() :
-                    urlConnection.getErrorStream();
 
-            String response = readStringFromStream(is);
-            return new RestResponse(code, response);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
-    }*/
 
     private RestResponse connect(HttpURLConnection urlConnection) throws IOException {
         InputStream is = null;

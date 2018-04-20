@@ -5,46 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="40dp"
     tools:context="com.example.walid.tfg.EditUserFotoActivity">
 
-    <ImageView
-        android:id="@+id/editUserImage"
+    <ProgressBar
+        android:id="@+id/insertFotoProgress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/unkonwnfoto"/>
+        android:visibility="gone" />
 
-    <Button
-        android:id="@+id/selectUserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:radius="10dp"
-        android:background="@drawable/rounded_btn"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        android:text="@string/selectImage"/>
+    <LinearLayout
+        android:id="@+id/insertFotoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="40dp">
 
-    <Button
-        android:id="@+id/uploadUserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:radius="10dp"
-        android:textColor="@color/white"
-        android:background="@drawable/rounded_btn"
-        android:layout_marginTop="10dp"
-        android:text="@string/insertImage"/>
-    <Button
-        android:id="@+id/deleteUserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:radius="10dp"
-        android:background="@drawable/rounded_btn"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        android:text="@string/deleteImage"
-        android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/editUserImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/unkonwnfoto"/>
+
+        <Button
+            android:id="@+id/selectUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:radius="10dp"
+            android:background="@drawable/rounded_btn"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:text="@string/selectImage"/>
+
+        <Button
+            android:id="@+id/uploadUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:radius="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_btn"
+            android:layout_marginTop="10dp"
+            android:text="@string/insertImage"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/deleteUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:radius="10dp"
+            android:background="@drawable/rounded_btn"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:text="@string/deleteImage"
+            android:visibility="gone"/>
+    </LinearLayout>
 </LinearLayout>

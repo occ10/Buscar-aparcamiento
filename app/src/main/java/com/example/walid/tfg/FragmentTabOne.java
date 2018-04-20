@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,12 +30,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.support.v7.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
+
+import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class FragmentTabOne extends Fragment {
     //ListView   listView ;
@@ -122,6 +127,17 @@ public class FragmentTabOne extends Fragment {
             holder.origen.setText("Salida: " + rutasList.get(position).getOrigen());
             holder.precioPlaza.setText("Precio: " + String.valueOf(rutasList.get(position).getPrecio()));
             holder.plazasDisponible.setText("Plazas disponibles " +  Integer.toString(rutasList.get(position).getPlazas()- rutasList.get(position).getPlazasOcupadas()));
+            Picasso.with(getActivity()).load(IMAGE_PATH + rutasList.get(position).getUser().getEmail())
+                    .error(R.drawable.unkonwnfoto)
+                    .into(holder.userAnounceImageList, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+                        @Override
+                        public void onError() {
+                        }
+                    });
             holder.mView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -152,6 +168,7 @@ public class FragmentTabOne extends Fragment {
             public final TextView origen;
             public final TextView precioPlaza;
             public final TextView plazasDisponible;
+            public final ImageView userAnounceImageList;
 
             public ViewHolder(View view){
 
@@ -163,6 +180,7 @@ public class FragmentTabOne extends Fragment {
                 origen = (TextView) view.findViewById(R.id.origine);
                 precioPlaza = (TextView) view.findViewById(R.id.precioPlaza);
                 plazasDisponible = (TextView) view.findViewById(R.id.plazasDisponible);
+                userAnounceImageList = (ImageView) view.findViewById(R.id.userAnounceImageList);
 
             }
         }
