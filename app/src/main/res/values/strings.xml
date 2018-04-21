@@ -72,6 +72,8 @@
     <string name="selectImage">SELECCIONAR IMAGEN</string>
     <string name="insertImage">INSERTAR IMAGEN</string>
     <string name="deleteImage">BORRAR IMAGEN</string>
+    <string name="insertCar">AÑADIR COCHE</string>
+    <string name="deleteCar">BORRAR COCHE</string>
     <string-array name="car_brand">
         <item>A15</item>
         <item>AUDI</item>

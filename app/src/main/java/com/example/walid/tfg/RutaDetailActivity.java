@@ -24,6 +24,7 @@ import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
+import static com.example.walid.tfg.CarDetailActivity.CAR_IMAGE_PATH;
 import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class RutaDetailActivity extends AppCompatActivity {
@@ -42,6 +43,7 @@ public class RutaDetailActivity extends AppCompatActivity {
     private TextView carCategoryView;
     private TextView carColorView;
     private ImageView routeDetaiUser;
+    private ImageView  routeDetailCarImage;
     private Boolean onresumeFirstCall = false;
     private String userRoute;
     private int idRoute;
@@ -69,6 +71,7 @@ public class RutaDetailActivity extends AppCompatActivity {
         carCategoryView = (TextView) findViewById(R.id.carCategory);
         carColorView = (TextView) findViewById(R.id.carColor);
         routeDetaiUser = (ImageView) findViewById(R.id.routeDetaiUser);
+        routeDetailCarImage = (ImageView) findViewById(R.id.routeDetailCarImage);
 
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua, userRoute, idRoute);
@@ -209,6 +212,23 @@ public class RutaDetailActivity extends AppCompatActivity {
                 public void onError() {
                 }
             });
+            Picasso.with(RutaDetailActivity.this).load(CAR_IMAGE_PATH + ruta.getUser().getEmail())
+                    .placeholder(R.drawable.car)
+                    .error(R.drawable.car)
+                    .fit().centerCrop()
+                    //.resize(500,500)
+                    .into(routeDetailCarImage, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //showProgress(false);
+                        }
+
+                        @Override
+                        public void onError() {
+                            Log.d("UNIVERSITY", "no se ha podido cargar la imagen");
+                            //showProgress(false);
+                        }
+                    });
         }
     }
 }

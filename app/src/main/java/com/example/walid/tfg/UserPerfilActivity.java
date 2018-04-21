@@ -114,8 +114,8 @@ public class UserPerfilActivity extends AppCompatActivity {
                     firstCommentPerfil.setText(commentsList.get(0).getComment());
                     if(commentsList.size() > 1){
                         secondLayoutPerfil.setVisibility(View.VISIBLE);
-                        nameSecondCommentPerfil.setText(commentsList.get(0).getUser().getNombre() + " ");
-                        secondCommentPerfil.setText(commentsList.get(0).getComment());
+                        nameSecondCommentPerfil.setText(commentsList.get(1).getUser().getNombre() + " ");
+                        secondCommentPerfil.setText(commentsList.get(1).getComment());
                     }
                     if(commentsList.size() > 2){
                         link_comments.setVisibility(View.VISIBLE);

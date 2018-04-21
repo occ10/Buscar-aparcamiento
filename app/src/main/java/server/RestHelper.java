@@ -87,7 +87,7 @@ public class RestHelper {
             urlConnection = getConnection(url, "POST", headers);
             writePostData(urlConnection, body);
             RestResponse response = connectCreated(urlConnection);
-            Log.d("response",String.valueOf(response.getHttpResponseCode()) + " " + String.valueOf(response.getHttpResponseCode()));
+            Log.d("response",String.valueOf(response.getHttpResponseCode()) + " " + String.valueOf(response.getHttpContent()));
             return response;
         } finally {
             if (urlConnection != null) {

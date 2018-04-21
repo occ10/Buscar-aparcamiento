@@ -29,7 +29,7 @@ public class EditPerfilActivity extends AppCompatActivity {
         tab3.setIndicator("Coche", null);
         tabHost.addTab(tab1, EditUserDataActivity.class, null);
         tabHost.addTab(tab2, EditUserFotoActivity.class, null);
-        tabHost.addTab(tab3, InsertUserCarActivity.class, null);
+        tabHost.addTab(tab3, CarDetailActivity.class, null);
     }
 
     @Override

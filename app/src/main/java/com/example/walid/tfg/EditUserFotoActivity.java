@@ -88,32 +88,6 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
         imageView = (ImageView) view.findViewById(R.id.editUserImage);
         insertUserImageView = view.findViewById(R.id.insertFotoLayout);
         mProgressView = view.findViewById(R.id.insertFotoProgress);
-        int radius = 60; // corner radius, higher value = more rounded
-        int margin = 10; // crop margin, set to 0 for corners with no crop
-        /*Glide.with(getActivity())
-                .load(IMAGE_PATH + "kkk@kkk.com")
-                .override(1200, 1200)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .bitmapTransform(new RoundedCornersTransformation(getActivity(), radius, margin))
-                .placeholder(R.drawable.unkonwnfoto)
-                .error(R.drawable.unkonwnfoto)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        // log exception
-                        Log.e("TAG", "Error loading image eeeeeeeeeeeeee", e);
-                        return false; // important to return false so the error placeholder can be placed
-                    }
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        buttonChoose.setVisibility(View.GONE);
-                        buttonUpload.setVisibility(View.GONE);
-                        deleteUserButton.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-                })
-                .into(imageView);*/
         showProgress(true);
         Picasso.with(getActivity()).load(IMAGE_PATH + "kkk@kkk.com").centerCrop()
         //.placeholder(R.drawable.unkonwnfoto)

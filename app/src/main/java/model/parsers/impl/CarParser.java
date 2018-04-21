@@ -79,10 +79,10 @@ public class CarParser implements IParser<Car> {
         car.setModel(obj.getString(MODEL));
         car.setColor(obj.getString(COLOR));
         car.setSeating(obj.getInt(SEATING));
-        car.setColor(obj.getString(CARUSER));
-        car.setColor(obj.getString(BRAND));
+        car.setUser(obj.getString(CARUSER));
+        car.setBrand(obj.getString(BRAND));
         car.setCategory(obj.getString(CATEGORY));
-        car.setColor(obj.getString(IMAGE));
+        car.setImage(obj.getString(IMAGE));
 
         return car;
     }

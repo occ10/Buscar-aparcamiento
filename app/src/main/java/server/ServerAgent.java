@@ -52,6 +52,9 @@ public class ServerAgent {
     public static final String USERCOMMENTS_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comments";
     public static final String COMMENTSUSERCOMMENTED_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comented";
     public static final String DELETE_IMAGE_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/deleteImage";
+    public static final String CAR_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/car";
+    public static final String CAR_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/car";
+
 
     private Context context;
     private RestHelper restHelper;
@@ -114,6 +117,15 @@ public class ServerAgent {
         return rutas = (httpContent != null) ? parser.fromJson(httpContent) : null;
     }
 
+    public Car getCarFromServer(String email) throws IOException, NetworkException, JSONException {
+
+        RestResponse response =  getResponseFromServer(CAR_PATH + "/" + email);
+        IParser parser = ParserFactory.newInstance()
+                .getCarParser();
+        String httpContent = response.getHttpContent();
+        Log.d("get car jsong conetent", httpContent);
+        return httpContent != null ? (Car) parser.getJsonObject(httpContent) : null;
+    }
     public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario, Car car) throws IOException, NetworkException {
 
         JSONObject json = new JSONObject();
@@ -148,6 +160,43 @@ public class ServerAgent {
         }
         return true;
     }
+
+    public Car insertCar(Car car) throws IOException, NetworkException, JSONException {
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("registration", car.getRegistration());
+            json.put("model", car.getModel());
+            json.put("color", car.getColor());
+            json.put("seating", car.getSeating());
+            json.put("user", car.getUser());
+            json.put("brand", car.getBrand());
+            json.put("category", car.getCategory());
+            Log.d("Apua jsong insert car", json.toString());
+        }catch(JSONException e){
+
+        }
+
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-type", "application/json");
+
+        RestResponse response = restHelper.post(context, CAR_INSERT_PATH, headers, json.toString());
+        //Log.d("Apua jsong", json.toString());
+        if (response.getHttpResponseCode() != 201) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        IParser parser = ParserFactory.newInstance()
+                .getCarParser();
+        String httpContent = response.getHttpContent();
+        return (Car) parser.getJsonObject(httpContent);
+    }
+
     public List<Zona> getZonesFromServer(String code) throws IOException, NetworkException, JSONException {
         Log.d("Zonasss path --------------------", ZONAS_PATH + "/" + code);
         RestResponse response =  getResponseFromServer(ZONAS_PATH + "/" + code);

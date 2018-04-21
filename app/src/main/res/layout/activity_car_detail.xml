@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.walid.tfg.CarDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/insertCarProgressFragment"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/insertCarLayoutFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="40dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/insertCarImageFragment"
+                android:src="@drawable/car"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10pt"/>
+            <TextView
+                android:id="@+id/carModelFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="ejemplo"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/carCategoryFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="ejemplo"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/carColorFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="ejemplo"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/insertCarButtonFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:radius="10dp"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_btn"
+                android:layout_marginTop="10dp"
+                android:text="@string/insertCar"/>
+            <Button
+                android:id="@+id/deleteCarButtonFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:radius="10dp"
+                android:background="@drawable/rounded_btn"
+                android:textColor="@color/white"
+                android:layout_marginTop="10dp"
+                android:text="@string/deleteCar"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

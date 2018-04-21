@@ -376,7 +376,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     usuario = apua.serverAgent.getUser(email);
                 }
             } catch (Exception e) {
-                success = false;
+                cancel(true);
                 Log.d("APPUA", "Error trying to log. ", e);
             }
             return success;
@@ -410,6 +410,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         "Login or password are not correct.",
                         Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            showProgress(false);
+            loadingTask = null;
+            Toast.makeText(LoginActivity.this,
+                    "try mas later, an error has occured in the server",
+                    Toast.LENGTH_LONG).show();
+
         }
     }
 }

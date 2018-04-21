@@ -12,7 +12,6 @@ public class Car implements Parcelable {
     public static final String REGISTRATION = "registration";
     public static final String MODEL = "model";
     public static final String COLOR = "color";
-    // public static final String PASSWORD = "password";
     public static final String SEATING = "seating";
     public static final String CARUSER = "user";
     public static final String BRAND = "brand";

@@ -183,6 +183,7 @@
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/routeDetailCarImage"
                     android:src="@drawable/car"
                     android:layout_width="60dp"
                     android:layout_height="60dp" />
