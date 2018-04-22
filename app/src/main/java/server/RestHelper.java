@@ -137,7 +137,7 @@ public class RestHelper {
         }
     }
 
-    public RestResponse insertImage(Context context, String url, Map<String, String> headers, String filaImage)
+    public RestResponse insertImage(Context context, String url, Map<String, String> headers, String filaImage, String email)
             throws IOException, NetworkException {
 
         if (!checkConnectivity(context)) {
@@ -147,7 +147,7 @@ public class RestHelper {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = getConnection(url, "PUT", headers);
-            writePutImage(urlConnection, filaImage);
+            writePutImage(urlConnection, filaImage, email);
             RestResponse response = connect(urlConnection);
             return response;
         } finally {
@@ -167,7 +167,7 @@ public class RestHelper {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = getConnection(url, "DELETE", headers);
-            RestResponse response = connectCreated(urlConnection);
+            RestResponse response = connect(urlConnection);
             return response;
         } finally {
             if (urlConnection != null) {
@@ -204,7 +204,7 @@ public class RestHelper {
         }
     }
 
-    private void writePutImage(HttpURLConnection urlConnection, String imageFile) throws IOException {
+    private void writePutImage(HttpURLConnection urlConnection, String imageFile, String email) throws IOException {
         DataOutputStream dos = null;
         String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
         FileInputStream fileInputStream = new FileInputStream(new File(imageFile));
@@ -227,7 +227,7 @@ public class RestHelper {
 
             dos.writeBytes("Content-Disposition: form-data; name=\"email\""+ lineEnd);
             dos.writeBytes(lineEnd);
-            dos.writeBytes("kkk@kkk.com");
+            dos.writeBytes(email);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
             dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""

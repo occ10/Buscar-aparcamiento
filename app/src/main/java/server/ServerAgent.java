@@ -36,7 +36,7 @@ public class ServerAgent {
     public static final String ZONAS_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zonas";
     public static final String LOGIN_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/user";
     public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
-    public static final String FOTO_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/saveFile";
+    public static final String FOTO_PATH = "http://10.0.2.2:8080/tfg/rest/";
     public static final String UPDATEUSUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/update";
     public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
     public static final String RUTA_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/insertRoute";
@@ -52,9 +52,9 @@ public class ServerAgent {
     public static final String USERCOMMENTS_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comments";
     public static final String COMMENTSUSERCOMMENTED_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comented";
     public static final String DELETE_IMAGE_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/deleteImage";
-    public static final String CAR_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/car";
+    public static final String DELETE_CAR_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/deleteCar";
     public static final String CAR_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/car";
-
+    //public static final String PATH = "http://10.0.2.2:8080/tfg/rest/";
 
     private Context context;
     private RestHelper restHelper;
@@ -118,12 +118,14 @@ public class ServerAgent {
     }
 
     public Car getCarFromServer(String email) throws IOException, NetworkException, JSONException {
-
+        Car car = null;
+        String httpContent = null;
         RestResponse response =  getResponseFromServer(CAR_PATH + "/" + email);
         IParser parser = ParserFactory.newInstance()
                 .getCarParser();
-        String httpContent = response.getHttpContent();
-        Log.d("get car jsong conetent", httpContent);
+        if(response.getHttpResponseCode() == 200)
+        httpContent = response.getHttpContent();
+        //Log.d("get car jsong conetent", httpContent);
         return httpContent != null ? (Car) parser.getJsonObject(httpContent) : null;
     }
     public boolean insertRoute(String origen,String precio,String plazas,String detallesRuta, Usuario usuario, Car car) throws IOException, NetworkException {
@@ -181,7 +183,7 @@ public class ServerAgent {
         headers.put("Accept", "application/json");
         headers.put("Content-type", "application/json");
 
-        RestResponse response = restHelper.post(context, CAR_INSERT_PATH, headers, json.toString());
+        RestResponse response = restHelper.post(context, CAR_PATH, headers, json.toString());
         //Log.d("Apua jsong", json.toString());
         if (response.getHttpResponseCode() != 201) {
             throw new NetworkException(new StringBuilder()
@@ -322,11 +324,6 @@ public class ServerAgent {
     }*/
 
     public boolean loginUsuario(String email, String password) throws IOException, NetworkException {
-        // TODO
-        /*Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("correo", email)
-                .appendQueryParameter("contraseña", password);
-        String query = builder.build().getEncodedQuery();*/
 
         JSONObject json = new JSONObject();
         try {
@@ -409,6 +406,24 @@ public class ServerAgent {
         return true;
     }
 
+    public boolean deleteCar(String email) throws IOException, NetworkException, JSONException {
+
+        Map<String, String> headers= new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-type", "application/json");
+
+        RestResponse response = restHelper.delete(context, DELETE_CAR_PATH + "/" + email, headers);
+        if (response.getHttpResponseCode() != 204) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        return true;
+    }
+
     public RestResponse getResponseFromServer(String path) throws IOException, NetworkException {
         RestResponse response = restHelper.get(context, path, null);
         if (response.getHttpResponseCode() != 200 && response.getHttpResponseCode() != 404) {
@@ -459,7 +474,7 @@ public class ServerAgent {
         return true;
     }
 
-    public boolean sendImage(String email, String imageFile) throws IOException, NetworkException {
+    public boolean sendImage(String email, String imageFile, String imageService) throws IOException, NetworkException {
 
         String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
         String boundary = "*****";
@@ -472,7 +487,7 @@ public class ServerAgent {
         headers.put("ENCTYPE", "multipart/form-data");
         headers.put("uploaded_file", fileName);
 
-        RestResponse response = restHelper.insertImage(context, FOTO_USUARIO_PATH, headers, imageFile);
+        RestResponse response = restHelper.insertImage(context, FOTO_PATH + imageService + "/saveFile", headers, imageFile,email);
         if (response.getHttpResponseCode() == 400) {
             return false;
         }else if(response.getHttpResponseCode() != 200){

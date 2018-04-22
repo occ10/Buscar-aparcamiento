@@ -70,6 +70,7 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
     private View mProgressView;
     private View insertUserImageView;
     public static final String IMAGE_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/getImage/";
+    private static final String service = "UserService";
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -234,7 +235,7 @@ public class EditUserFotoActivity extends Fragment implements View.OnClickListen
             try {
                 switch(action) {
                     case "insert":
-                    result = apua.serverAgent.sendImage("kkk@kkk.com", imageFile);
+                    result = apua.serverAgent.sendImage("kkk@kkk.com", imageFile, service);
                     break;
 
                     case "del":

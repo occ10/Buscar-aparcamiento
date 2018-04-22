@@ -19,10 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import model.Apua;
 import model.entities.Car;
+import model.entities.Usuario;
 
 import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
@@ -37,7 +40,10 @@ public class CarDetailActivity extends Fragment {
     private TextView carCategoryFragment;
     private TextView carColorFragment;
     private ImageView insertCarImageFragment;
+    private Button insertCarImageButtonFragment;
     public static final String CAR_IMAGE_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/getCarImage/";
+    public static final String service = "CarService";
+    private Apua apua;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +54,14 @@ public class CarDetailActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_car_detail, container, false);
-        final Apua apua = new Apua(getActivity());
+        apua = new Apua(getActivity());
         carModelFragment = view.findViewById(R.id.carModelFragment);
         carCategoryFragment = view.findViewById(R.id.carCategoryFragment);
         carColorFragment = view.findViewById(R.id.carColorFragment);
         insertCarImageFragment = view.findViewById(R.id.insertCarImageFragment);
         deleteCarButtonFragment = (Button) view.findViewById(R.id.deleteCarButtonFragment);
         insertCarButtonFragment = (Button) view.findViewById(R.id.insertCarButtonFragment);
+        insertCarImageButtonFragment = (Button) view.findViewById(R.id.insertCarImageButtonFragment);
         insertCarButtonFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,18 +75,25 @@ public class CarDetailActivity extends Fragment {
             @Override
             public void onClick(View view) {
 
+                if (loadingTask == null) {
+                    showProgress(true);
+                    loadingTask = new LoadingTask(apua,"kkk@kkk.com","del");
+                    loadingTask.execute();
+                }
+            }
+
+        });
+        insertCarImageButtonFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent().setClass(
+                        getActivity(), CarImageActivity.class);
+                startActivity(intent);
             }
 
         });
         insertCarProgressFragment = view.findViewById(R.id.insertCarProgressFragment);
         insertCarLayoutFragment = view.findViewById(R.id.insertCarLayoutFragment);
-        showProgress(true);
-        if (loadingTask == null) {
-            //showProgress(true);
-            loadingTask = new LoadingTask(apua,"kkk@kkk.com");
-            loadingTask.execute();
-        }
-
         return view;
     }
 
@@ -91,11 +105,17 @@ public class CarDetailActivity extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        showProgress(true);
+        //if (loadingTask == null) {
+            loadingTask = new LoadingTask(apua,"kkk@kkk.com", "get");
+            loadingTask.execute();
+        //}
     }
     @Override
     public void onStop(){
         super.onStop();
     }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -132,21 +152,34 @@ public class CarDetailActivity extends Fragment {
     public class LoadingTask extends AsyncTask<Void, Void, Car> {
         private Apua apua;
         private String email;
+        private String action;
 
-        public LoadingTask(Apua apua, String email) {
+        public LoadingTask(Apua apua, String email,String action) {
             this.apua = apua;
             this.email = email;
+            this.action =action;
         }
 
         @Override
         protected Car doInBackground(Void... voids) {
             Car carResult = null;
+            Usuario user ;
             try {
 
-                carResult = apua.serverAgent.getCarFromServer(email);
+                switch(action) {
+                    case "get":
+                        carResult = apua.serverAgent.getCarFromServer(email);
+                        break;
+                    case "insert":
+                        //carResult = apua.serverAgent.getCarFromServer(email);
+                        break;
+                    case "del":
+                        apua.serverAgent.deleteCar(email);
+                        break;
+                }
             } catch (Exception e) {
                 cancel(true);
-                Log.d("UNIVERSITY", "Error trying to get car. ", e);
+                Log.d("UNIVERSITY", "Error trying to operate about car. ", e);
             }
             return carResult;
         }
@@ -155,36 +188,57 @@ public class CarDetailActivity extends Fragment {
         protected void onPostExecute(Car result) {
             showProgress(false);
             loadingTask = null;
-            if(result != null){
+            switch(action) {
+                case "get":
 
-                if(result.getImage() != null){
-                    Log.d("car image", result.getImage());
-                    Picasso.with(getActivity()).load(CAR_IMAGE_PATH + "kkk@kkk.com")
-                            .placeholder(R.drawable.car)
-                            .error(R.drawable.car)
-                            //.resize(500,500)
-                            .into(insertCarImageFragment, new com.squareup.picasso.Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    //showProgress(false);
-                                }
+                    if (result != null) {
+                        //if (!result.getImage().equals("null")) {
+                            //Log.d("car image", result.getImage());
+                            Picasso.with(getActivity()).load(CAR_IMAGE_PATH + email)
+                                    .placeholder(R.drawable.car)
+                                    .error(R.drawable.car)
+                                    .networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE)
+                                    .into(insertCarImageFragment, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d("UNIVERSITY", "exit trying car. ");
+                                            insertCarImageButtonFragment.setVisibility(View.VISIBLE);
+                                            insertCarImageButtonFragment.setText("CAMBIAR IMAGEN");;
+                                        }
 
-                                @Override
-                                public void onError() {
-                                    Log.d("UNIVERSITY", "no se ha podido cargar la imagen");
-                                    //showProgress(false);
-                                }
-                            });
-                }
-                carModelFragment.setVisibility(View.VISIBLE);
-                carModelFragment.setText("Modelo " + result.getModel());
-                carCategoryFragment.setVisibility(View.VISIBLE);
-                carCategoryFragment.setText("Marca " + result.getCategory());
-                carColorFragment.setVisibility(View.VISIBLE);
-                carColorFragment.setText("Color " + result.getColor());
-                insertCarButtonFragment.setVisibility(View.GONE);
-                deleteCarButtonFragment.setVisibility(View.VISIBLE);
+                                        @Override
+                                        public void onError() {
+                                            Log.d("UNIVERSITY", "Error trying get car. ");
+                                            insertCarImageButtonFragment.setVisibility(View.VISIBLE);
+                                        }
+                                    });
+                        //}
+                        carModelFragment.setVisibility(View.VISIBLE);
+                        carModelFragment.setText("Modelo " + result.getModel());
+                        carCategoryFragment.setVisibility(View.VISIBLE);
+                        carCategoryFragment.setText("Marca " + result.getCategory());
+                        carColorFragment.setVisibility(View.VISIBLE);
+                        carColorFragment.setText("Color " + result.getColor());
+                        insertCarButtonFragment.setVisibility(View.GONE);
+                        deleteCarButtonFragment.setVisibility(View.VISIBLE);
 
+                    }
+                    break;
+                case "del":
+                    Toast.makeText(getActivity(),
+                            "the car is deleted correctly",
+                            Toast.LENGTH_LONG).show();
+                    insertCarImageFragment.setImageResource(R.drawable.car);
+                    carModelFragment.setText("");
+                    carModelFragment.setVisibility(View.GONE);
+                    carCategoryFragment.setText("");
+                    carCategoryFragment.setVisibility(View.GONE);
+                    carColorFragment.setText("");
+                    carColorFragment.setVisibility(View.GONE);
+                    insertCarButtonFragment.setVisibility(View.VISIBLE);
+                    deleteCarButtonFragment.setVisibility(View.GONE);
+                    insertCarImageButtonFragment.setVisibility(View.GONE);
+                    break;
             }
 
         }
