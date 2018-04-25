@@ -34,19 +34,19 @@ public class EditPerfilActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
         tabHost = null;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu;
-        // this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem item = menu.findItem(R.id.editPerfil);
+        item.setVisible(false);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -62,6 +62,11 @@ public class EditPerfilActivity extends AppCompatActivity {
             case R.id.closeSesion:
                 intent = new Intent().setClass(
                         EditPerfilActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        EditPerfilActivity.this, SearchUserActivity.class);
                 startActivity(intent);
                 break;
         }

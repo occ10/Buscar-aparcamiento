@@ -3,7 +3,9 @@ package com.example.walid.tfg;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,9 @@ import model.Apua;
 import model.entities.Car;
 import android.widget.Toast;
 
+import static Constants.Constants.MyPREFERENCES;
+import static Constants.Constants.USUARIO;
+
 public class InsertUserCarActivity extends AppCompatActivity {
 
     private Spinner brandSpinner;
@@ -42,13 +47,16 @@ public class InsertUserCarActivity extends AppCompatActivity {
     AsyncTask<Void, Void, Car> loadingTask;
     private View insertCarProgress;
     private View insertCarScroll;
-
+    private SharedPreferences sharedpreferences;
+    private String emailShared;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_user_car);
         getSupportActionBar().setHomeButtonEnabled(true);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        emailShared = sharedpreferences.getString(USUARIO, null);
         final Car car = new Car();
         carRegistration = (TextView) findViewById(R.id.carRegistration);
         insertCarButton = (Button) findViewById(R.id.insertCarButton);
@@ -201,11 +209,11 @@ public class InsertUserCarActivity extends AppCompatActivity {
                         InsertUserCarActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
-            /*case R.id.editPerfil:
+            case R.id.searchUser:
                 intent = new Intent().setClass(
-                        InsertUserCarActivity.this, EditPerfilActivity.class);
+                        InsertUserCarActivity.this, SearchUserActivity.class);
                 startActivity(intent);
-                break;*/
+                break;
         }
         return true;
     }
@@ -301,7 +309,7 @@ public class InsertUserCarActivity extends AppCompatActivity {
         protected Car doInBackground(Void... voids) {
             Car carResult = null;
             try {
-                car.setUser("kkk@kkk.com");
+                car.setUser(emailShared);
                 carResult = apua.serverAgent.insertCar(car);
             } catch (Exception e) {
                 cancel(true);

@@ -85,8 +85,14 @@
         <activity
             android:name=".InsertUserCarActivity"
             android:parentActivityName=".UserPerfilActivity" />
-        <activity android:name=".CarImageActivity"
+        <activity
+            android:name=".CarImageActivity"
             android:parentActivityName=".EditPerfilActivity" />
+        <activity
+            android:name=".SearchUserActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".UsersListActivity"
+            android:parentActivityName=".SearchUserActivity"/>
     </application>
 
 </manifest>

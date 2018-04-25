@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ import model.entities.Zona;
  * Created by walid on 04/03/2018.
  */
 
-public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
+public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private GoogleMap mMap;
     AsyncTask<Void, Void, List<Zona>> loadingTask;
@@ -44,7 +45,8 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
     ArrayAdapter<SpinnerValue> dataAdapter;
     List<SpinnerValue> values;
     Spinner spinner;
-    private Boolean mIsSpinnerFirstCall = true;
+    SpinnerValue spinnerValue;
+    private Button searchParkingButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,25 +54,21 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Apua apua = new Apua(this);
         Bundle extras = getIntent().getExtras();
         String code = extras.getString("idParking");
-
-        Log.d("UNIVERSITY22222", code);
-
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua,code);
             loadingTask.execute();
         }
-
         setContentView(R.layout.fragment_layout_tree);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        //ActionBar actionBar = getActionBar();
         getSupportActionBar().setHomeButtonEnabled(true);
-
         spinner = (Spinner) findViewById(R.id.parkings_spinner);
         TextView textview = (TextView) findViewById(R.id.parkingMessage);
-
+        searchParkingButton = (Button) findViewById(R.id.searchParkingButton);
+        searchParkingButton.setOnClickListener(this);
         values = new ArrayList<SpinnerValue>();
+
         if(zonasList.size() > 0) {
             textview.setText("Elige zona para aparcar");
             spinner.setVisibility(View.VISIBLE);
@@ -91,7 +89,6 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "De momento todas las zonas estan ocupadas, vuelve a buscar en otro parking ", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,6 +115,11 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
                         ZonaActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        ZonaActivity.this, SearchUserActivity.class);
+                startActivity(intent);
+                break;
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         ZonaActivity.this, EditPerfilActivity.class);
@@ -126,11 +128,6 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return true;
     }
-    /*@Override
-    public boolean onSupportNavigateUp(){
-        finish();
-        return true;
-    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -150,7 +147,6 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }else{
 
-            // Add a marker in Sydney and move the camera
             LatLng ua = new LatLng(38.384638888889, -0.51314722222222);
             mMap.addMarker(new MarkerOptions().position(ua)).setVisible(false);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(ua));
@@ -160,38 +156,34 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Zona zona = null;
-        if (!mIsSpinnerFirstCall) {
 
+        spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
 
-            Log.d("mIsSpinnerFirstCall", mIsSpinnerFirstCall.toString());
-            SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
-            String codeZona = spinnerValue.getValue();
-
-            for(int i=0;i<zonasList.size();i++){
-                if(zonasList.get(i).getId() == Integer.valueOf(codeZona)){
-                    zona = zonasList.get(i);
-                   break;
-                }
-            }
-
-            Log.d("idZona", codeZona);
-            Intent intent = new Intent().setClass(
-                    ZonaActivity.this.getBaseContext(), OcuppyZone.class);
-            intent.putExtra("zona", zona);
-            intent.putExtra("desocuppy", false);
-                            /*Toast.makeText(LoginActivity.this,
-                                    "Login correcto ",
-                                    Toast.LENGTH_SHORT).show();*/
-            startActivity(intent);
-            finish();
-        }
-        mIsSpinnerFirstCall = false;
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        Zona zona = null;
+        String codeZona = spinnerValue.getValue();
+
+        for(int i=0;i<zonasList.size();i++){
+            if(zonasList.get(i).getId() == Integer.valueOf(codeZona)){
+                zona = zonasList.get(i);
+                break;
+            }
+        }
+        Intent intent = new Intent().setClass(
+                ZonaActivity.this.getBaseContext(), OcuppyZone.class);
+        intent.putExtra("zona", zona);
+        intent.putExtra("desocuppy", false);
+        startActivity(intent);
+        finish();
     }
 
     public class LoadingTask extends AsyncTask<Void, Void, List<Zona>> {
@@ -210,6 +202,7 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
                 zonasList = apua.serverAgent.getZonesFromServer(code);
                 Log.d("zonasList", String.valueOf(zonasList.size()));
             } catch (Exception e) {
+                cancel(true);
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
             }
             return null;
@@ -219,6 +212,15 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
         protected void onPostExecute(List<Zona> parkings) {
             //parkingsList = parkings;
             //dataAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            loadingTask = null;
+            Toast.makeText(ZonaActivity.this,
+                    "try mas later, an error has occured in the server",
+                    Toast.LENGTH_LONG).show();
 
         }
     }

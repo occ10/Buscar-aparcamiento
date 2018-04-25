@@ -101,6 +101,11 @@ public class OcuppyZone extends AppCompatActivity implements OnMapReadyCallback 
                         OcuppyZone.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        OcuppyZone.this, SearchUserActivity.class);
+                startActivity(intent);
+                break;
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         OcuppyZone.this, EditPerfilActivity.class);

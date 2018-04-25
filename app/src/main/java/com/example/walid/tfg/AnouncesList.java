@@ -25,7 +25,7 @@ import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
+import static Constants.Constants.IMAGE_PATH;
 
 public class AnouncesList extends AppCompatActivity {
 
@@ -93,6 +93,12 @@ public class AnouncesList extends AppCompatActivity {
                         AnouncesList.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        AnouncesList.this, SearchUserActivity.class);
+                startActivity(intent);
+                break;
+
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         AnouncesList.this, EditPerfilActivity.class);

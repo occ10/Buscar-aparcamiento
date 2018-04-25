@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ import model.entities.Zona;
 
 import android.app.ProgressDialog;
 
-public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener,View.OnTouchListener {
+public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, AdapterView.OnItemSelectedListener, View.OnClickListener {
     private GoogleMap mMap;
     private int idRuta;
     private Parking parking;
@@ -47,11 +48,12 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
     private ProgressBar progressBar;
     private Boolean mIsSpinnerFirstCall = false;
     private Boolean onresumeFirstCall = false;
-    private int check = 0;
-
+    private Button searchParkingButton;
     Usuario usuario = null;
     Zona zone = null;
     private Apua apua = null;
+    private SpinnerValue spinnerValue;
+
     public static FragmentTabTree newInstance() {
         FragmentTabTree fragment = new FragmentTabTree();
         return fragment;
@@ -69,7 +71,6 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
             loadingTask = new LoadingTask(apua);
             loadingTask.execute();
         }
-
     }
 
     @Override
@@ -80,67 +81,35 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        searchParkingButton = (Button) view.findViewById(R.id.searchParkingButton);
+        searchParkingButton.setOnClickListener(this);
         spinner = (Spinner) view.findViewById(R.id.parkings_spinner);
         values= new ArrayList<SpinnerValue>();
-        //values.add(new SpinnerValue("Select value",null));
         for (int i=0; i < parkingsList.size(); i++) {
             values.add(new SpinnerValue("parking " + (i+1),parkingsList.get(i).getCodigo()));
         }
         dataAdapter = new ArrayAdapter<SpinnerValue>(getActivity(),android.R.layout.simple_spinner_item, values);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-        //spinner.setSelected(false);  // must
-        //spinner.setSelection(0,true);  //must
-        spinner.setOnTouchListener(this);
+        //spinner.setOnTouchListener(this);
         spinner.setOnItemSelectedListener(this);
-        //spinner.setSelected(false);
         return view;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent,
                                View v, int position, long id) {
-
-        onresumeFirstCall = true;
-        Log.d("spinner position", String.valueOf(position));
-        //Log.d("zona aparcamiento", zone.getAparcamiento());
-        if (mIsSpinnerFirstCall) {
-            //Log.d("zona aparcamiento", zone.getAparcamiento());
-            if(zone == null) {
-                Log.d("spinner position", String.valueOf(position));
-                SpinnerValue spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
-                String codeParking = spinnerValue.getValue();
-                Log.d("idParking", codeParking);
-
-                //comprobar si el usuario tiene alguna zona ocupada
-                Intent intent = new Intent().setClass(
-                        getActivity(), ZonaActivity.class);
-                intent.putExtra("idParking", codeParking);
-                            /*Toast.makeText(LoginActivity.this,
-                                    "Login correcto ",
-                                    Toast.LENGTH_SHORT).show();*/
-                startActivity(intent);
-            }else{
-                Intent intent = new Intent().setClass(
-                        getActivity(), OcuppyZone.class);
-                intent.putExtra("zona", zone);
-                intent.putExtra("desocuppy", true);
-                startActivity(intent);
-            }
-            mIsSpinnerFirstCall = false;
-        }//else
-           // mIsSpinnerFirstCall = false;
+        spinnerValue = (SpinnerValue) parent.getItemAtPosition(position);
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //seleccion.setText("");
     }
-    @Override
+    /*@Override
     public boolean onTouch(View v, MotionEvent event) {
         mIsSpinnerFirstCall = true;
         return false;
-    }
+    }*/
     @Override
     public void onResume()
     {
@@ -179,6 +148,25 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if(zone == null) {
+            String codeParking = spinnerValue.getValue();
+            Log.d("idParking", codeParking);
+            Intent intent = new Intent().setClass(
+                    getActivity(), ZonaActivity.class);
+            intent.putExtra("idParking", codeParking);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent().setClass(
+                    getActivity(), OcuppyZone.class);
+            intent.putExtra("zona", zone);
+            intent.putExtra("desocuppy", true);
+            startActivity(intent);
+        }
+    }
+
     public class LoadingTask extends AsyncTask<Void, Void, Zona> {
         private Apua apua;
 
@@ -196,6 +184,7 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
                 //Log.d("zona aparcamiento", zone.getAparcamiento());
 
             } catch (Exception e) {
+                cancel(true);
                 Log.d("UNIVERSITY", "Error trying to log. ", e);
             }
             return zona;
@@ -206,6 +195,15 @@ public class FragmentTabTree extends Fragment  implements OnMapReadyCallback, Ad
             //parkingsList = parkings;
             loadingTask = null;
             dataAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            loadingTask = null;
+            Toast.makeText(getActivity(),
+                    "try mas later, an error has occured in the server",
+                    Toast.LENGTH_LONG).show();
 
         }
     }

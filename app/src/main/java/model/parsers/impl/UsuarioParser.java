@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,12 +62,16 @@ public class UsuarioParser implements IParser<Usuario>{
     @Override
     public List<Usuario> fromJson(String json) throws JSONException {
         JSONArray jsonArray = new JSONArray(json);
-        List<Usuario> usuarios = new LinkedList<Usuario>();
+        List<Usuario> usuarios = new ArrayList<Usuario>();
         for (int i = 0; i<jsonArray.length(); i++) {
             JSONObject nuevo = jsonArray.getJSONObject(i);
             Usuario usuario = new Usuario();
             usuario.setEmail(nuevo.getString(EMAIL));
             usuario.setNombre(nuevo.getString(NOMBRE));
+            usuario.setApellido(nuevo.getString(APELLIDO));
+            usuario.setEdad(nuevo.getInt(EDAD));
+            usuario.setTelefono(nuevo.getString(TELEFONO));
+            usuario.setDescripcion(nuevo.getString(DESCRIPCION));
 
             usuarios.add(usuario);
         }

@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        MainActivity.this, SearchUserActivity.class);
+                startActivity(intent);
+                break;
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         MainActivity.this, EditPerfilActivity.class);

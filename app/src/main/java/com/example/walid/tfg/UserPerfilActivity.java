@@ -27,7 +27,7 @@ import model.entities.Comment;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
+import static Constants.Constants.IMAGE_PATH;
 
 public class UserPerfilActivity extends AppCompatActivity {
     private Boolean QuickFactsExpanded = true;
@@ -164,6 +164,11 @@ public class UserPerfilActivity extends AppCompatActivity {
             case R.id.closeSesion:
                 intent = new Intent().setClass(
                         UserPerfilActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        UserPerfilActivity.this, SearchUserActivity.class);
                 startActivity(intent);
                 break;
             case R.id.editPerfil:

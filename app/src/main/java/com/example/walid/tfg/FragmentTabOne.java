@@ -39,7 +39,7 @@ import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
+import static Constants.Constants.*;
 
 public class FragmentTabOne extends Fragment {
     //ListView   listView ;
@@ -62,14 +62,10 @@ public class FragmentTabOne extends Fragment {
         //session = new SessionManager(getApplicationContext());
         Bundle extras = getActivity().getIntent().getExtras();
         usuario = extras.getParcelable("usuario");
-
         Log.d("Usuario apellido", usuario.getApellido());
 
         apua =  new Apua(getActivity());
 
-                    /*((MyAppContext)getApplicationContext()
-                    .getApplicationContext())
-                    .getApuaInstance();*/
         if (loadingTask == null) {
             loadingTask = new LoadingTask(apua, usuario);
             loadingTask.execute();

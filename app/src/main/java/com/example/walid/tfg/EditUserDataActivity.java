@@ -1,5 +1,7 @@
 package com.example.walid.tfg;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -22,6 +24,9 @@ import android.widget.Toast;
 import model.Apua;
 import model.entities.Usuario;
 
+import static Constants.Constants.MyPREFERENCES;
+import static Constants.Constants.USUARIO;
+
 public class EditUserDataActivity extends Fragment {
 
     private AutoCompleteTextView nombre;
@@ -36,6 +41,8 @@ public class EditUserDataActivity extends Fragment {
     AsyncTask<Void, Integer, Usuario> loadingTaskEdit;
     private Usuario user;
     private static final int MAX_PROGRESS = 100;
+    private SharedPreferences sharedpreferences;
+    private String emailShared;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +53,8 @@ public class EditUserDataActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_edit_user_data, container, false);
-
+        sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        emailShared = sharedpreferences.getString(USUARIO, null);
         nombre = (AutoCompleteTextView) view.findViewById(R.id.editName);
         apellido = (AutoCompleteTextView) view.findViewById(R.id.editFullName);
         mEmailView = (AutoCompleteTextView) view.findViewById(R.id.editEmail);
@@ -56,7 +64,7 @@ public class EditUserDataActivity extends Fragment {
         descripcion = (EditText) view.findViewById(R.id.editDescription);
         apua =  new Apua(getActivity());
         user = new Usuario();
-        user.setEmail("kkk@kkk.com");
+        user.setEmail(emailShared);
         if (loadingTaskEdit == null) {
             loadingTaskEdit = new LoadingTask(apua,user, "get");
             loadingTaskEdit.execute();

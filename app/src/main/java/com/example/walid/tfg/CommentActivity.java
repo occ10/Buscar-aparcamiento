@@ -20,7 +20,7 @@ import java.util.List;
 
 import model.entities.Comment;
 
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
+import static Constants.Constants.*;
 
 public class CommentActivity extends AppCompatActivity {
     private List<Comment> commentsList =new ArrayList<>();
@@ -65,6 +65,11 @@ public class CommentActivity extends AppCompatActivity {
             case R.id.closeSesion:
                 intent = new Intent().setClass(
                         CommentActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        CommentActivity.this, SearchUserActivity.class);
                 startActivity(intent);
                 break;
             case R.id.editPerfil:

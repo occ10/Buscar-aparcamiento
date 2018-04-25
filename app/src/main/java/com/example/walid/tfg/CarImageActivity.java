@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,9 +26,10 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import model.Apua;
-import model.entities.Car;
 
 import static android.content.ContentValues.TAG;
+import static Constants.Constants.MyPREFERENCES;
+import static Constants.Constants.USUARIO;
 
 public class CarImageActivity extends AppCompatActivity implements View.OnClickListener{
     AsyncTask<Void, Void, Boolean> loadingTask;
@@ -38,11 +41,15 @@ public class CarImageActivity extends AppCompatActivity implements View.OnClickL
     private View insertCarImageProgress;
     private View insertCarImageLayout;
     private static final String service = "CarService";
+    private SharedPreferences sharedpreferences;
+    private String emailShared;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_image);
         getSupportActionBar().setHomeButtonEnabled(true);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        emailShared = sharedpreferences.getString(USUARIO, null);
         selectCarImageButton = (Button) findViewById(R.id.selectCarImageButton);
         uploadCarImageButton = (Button) findViewById(R.id.uploadCarImageButton);
         editCarImageUpload = (ImageView) findViewById(R.id.editCarImageUpload);
@@ -97,6 +104,11 @@ public class CarImageActivity extends AppCompatActivity implements View.OnClickL
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         CarImageActivity.this, EditPerfilActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        CarImageActivity.this, SearchUserActivity.class);
                 startActivity(intent);
                 break;
         }
@@ -192,7 +204,7 @@ public class CarImageActivity extends AppCompatActivity implements View.OnClickL
         protected Boolean doInBackground(Void... voids) {
             boolean result = false;
             try {
-                result = apua.serverAgent.sendImage("kkk@kkk.com", imageFile, service);
+                result = apua.serverAgent.sendImage(emailShared, imageFile, service);
 
             } catch (Exception e) {
                 cancel(true);

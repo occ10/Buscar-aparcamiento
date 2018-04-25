@@ -3,12 +3,13 @@ package com.example.walid.tfg;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,8 @@ import model.Apua;
 import model.entities.Car;
 import model.entities.Usuario;
 
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
+import static Constants.Constants.MyPREFERENCES;
+import static Constants.Constants.USUARIO;
 
 public class CarDetailActivity extends Fragment {
 
@@ -44,6 +46,8 @@ public class CarDetailActivity extends Fragment {
     public static final String CAR_IMAGE_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/getCarImage/";
     public static final String service = "CarService";
     private Apua apua;
+    private SharedPreferences sharedpreferences;
+    private String emailShared;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,8 @@ public class CarDetailActivity extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_car_detail, container, false);
         apua = new Apua(getActivity());
+        sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        emailShared = sharedpreferences.getString(USUARIO, null);
         carModelFragment = view.findViewById(R.id.carModelFragment);
         carCategoryFragment = view.findViewById(R.id.carCategoryFragment);
         carColorFragment = view.findViewById(R.id.carColorFragment);
@@ -77,7 +83,7 @@ public class CarDetailActivity extends Fragment {
 
                 if (loadingTask == null) {
                     showProgress(true);
-                    loadingTask = new LoadingTask(apua,"kkk@kkk.com","del");
+                    loadingTask = new LoadingTask(apua,emailShared,"del");
                     loadingTask.execute();
                 }
             }
@@ -107,7 +113,7 @@ public class CarDetailActivity extends Fragment {
         super.onResume();
         showProgress(true);
         //if (loadingTask == null) {
-            loadingTask = new LoadingTask(apua,"kkk@kkk.com", "get");
+            loadingTask = new LoadingTask(apua,emailShared, "get");
             loadingTask.execute();
         //}
     }

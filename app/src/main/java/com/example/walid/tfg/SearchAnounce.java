@@ -3,7 +3,9 @@ package com.example.walid.tfg;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Parcelable;
@@ -16,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ import java.util.List;
 import model.Apua;
 import model.entities.Ruta;
 
+import static Constants.Constants.MyPREFERENCES;
+import static Constants.Constants.USUARIO;
+
 public class SearchAnounce extends AppCompatActivity {
 
     EditText origen = null;
@@ -32,11 +36,15 @@ public class SearchAnounce extends AppCompatActivity {
     private List<Ruta> rutasList = new ArrayList<>();
     private View mProgressView;
     private View msearchAnounceFormView;
+    private SharedPreferences sharedpreferences;
+    private String emailShared;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anounce);
         getSupportActionBar().setHomeButtonEnabled(true);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        emailShared = sharedpreferences.getString(USUARIO, null);
         origen = (EditText) findViewById(R.id.userOrigen);
 
         Button buscarAnuncio = (Button) findViewById(R.id.searchAnounceButton);
@@ -145,6 +153,11 @@ public class SearchAnounce extends AppCompatActivity {
                         SearchAnounce.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        SearchAnounce.this, SearchUserActivity.class);
+                startActivity(intent);
+                break;
             case R.id.editPerfil:
                 intent = new Intent().setClass(
                         SearchAnounce.this, EditPerfilActivity.class);
@@ -168,7 +181,7 @@ public class SearchAnounce extends AppCompatActivity {
         protected List<Ruta> doInBackground(Void... voids) {
             List<Ruta> rutas = null;
             try {
-                rutas = apua.serverAgent.getRutasOriginFromServer("kkk@kkk.com", origen);
+                rutas = apua.serverAgent.getRutasOriginFromServer(emailShared, origen);
                 Log.d("rustas list size", String.valueOf(rutas.size()));
 
             } catch (Exception e) {

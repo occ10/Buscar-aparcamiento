@@ -24,8 +24,8 @@ import model.Apua;
 import model.entities.Ruta;
 import model.entities.Usuario;
 
+import static Constants.Constants.IMAGE_PATH;
 import static com.example.walid.tfg.CarDetailActivity.CAR_IMAGE_PATH;
-import static com.example.walid.tfg.EditUserFotoActivity.IMAGE_PATH;
 
 public class RutaDetailActivity extends AppCompatActivity {
     Boolean QuickFactsExpanded = true;
@@ -77,9 +77,9 @@ public class RutaDetailActivity extends AppCompatActivity {
             loadingTask = new LoadingTask(apua, userRoute, idRoute);
             loadingTask.execute();
         }
-        final TextView lin_perfil= (TextView) findViewById(R.id.lin_perfil);
-        final ImageButton showDetalle = (ImageButton) findViewById(R.id.downButton);
-        lin_perfil.setOnClickListener(new View.OnClickListener() {
+        final TextView link_perfil= (TextView) findViewById(R.id.lin_perfil);
+        final ImageButton showDetail = (ImageButton) findViewById(R.id.downButton);
+        link_perfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onresumeFirstCall = true;
@@ -91,7 +91,7 @@ public class RutaDetailActivity extends AppCompatActivity {
             }
         });
 
-        showDetalle.setOnClickListener(new View.OnClickListener() {
+        showDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TextView routeDetal = (TextView) findViewById(R.id.routeDetail);
@@ -99,11 +99,11 @@ public class RutaDetailActivity extends AppCompatActivity {
                 if(QuickFactsExpanded) {
                     QuickFactsExpanded = false;
                     routeDetal.setVisibility(View.VISIBLE);
-                    showDetalle.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                    showDetail.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
                 }else{
                     QuickFactsExpanded = true;
                     routeDetal.setVisibility(View.GONE);
-                    showDetalle.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                    showDetail.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
                 }
             }
         });
@@ -150,6 +150,11 @@ public class RutaDetailActivity extends AppCompatActivity {
             case R.id.closeSesion:
                 intent = new Intent().setClass(
                         RutaDetailActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.searchUser:
+                intent = new Intent().setClass(
+                        RutaDetailActivity.this, SearchUserActivity.class);
                 startActivity(intent);
                 break;
             case R.id.editPerfil:

@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +24,6 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -38,18 +34,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Apua;
 import model.entities.Usuario;
-import application.MyAppContext;
-import server.NetworkException;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static Constants.Constants.*;
 
 /**
  * A login screen that offers login via email/password.
@@ -72,13 +64,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     AsyncTask<Void, Void, Boolean> loadingTask;
-    private SharedPreferences prefs;
+    private SharedPreferences sharedpreferences;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Button registrarse = (Button) findViewById(R.id.button2);
         registrarse.setOnClickListener(new OnClickListener() {
             @Override
@@ -219,7 +212,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             final Apua apua =  new Apua(this);
-
                     /*((MyAppContext)getApplicationContext()
                     .getApplicationContext())
                     .getApuaInstance();*/
@@ -230,24 +222,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 loadingTask.execute();
             }
-            //Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-            //myIntent.putExtra("key", value); //Optional parameters
-            //LoginActivity.this.startActivity(myIntent);
-            /*mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);*/
-
-           /* String stringUrl = "http://localhost:8080/tfg/rest/UserService/";
-            ConnectivityManager connMgr = (ConnectivityManager)
-                    getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
-                Log.d("Emai", mEmailView.getText().toString());
-                new UserLoginTask().execute(stringUrl,mEmailView.getText().toString(),mPasswordView.getText().toString());
-
-            } else {
-                //textView.setText("No network connection available.");
-                Log.d("MyApp", "no hay conexion");
-            }*/
         }
     }
 
@@ -391,6 +365,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (usuario.getConfirmado().equalsIgnoreCase("si")) {
                     Intent intent = new Intent().setClass(
                             LoginActivity.this, MainActivity.class);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+
+                    editor.putString("usuario", usuario.getEmail());
+                    editor.commit();
                     intent.putExtra("usuario", usuario);
                     Toast.makeText(LoginActivity.this,
                             "Login correcto ",

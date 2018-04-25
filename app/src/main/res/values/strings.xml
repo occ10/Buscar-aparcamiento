@@ -5,6 +5,7 @@
     <string name="action_sign_in">"Iniciar sesion"</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_phone">This number phone is invalid</string>
     <string name="error_invalid_origin">This origin is invalid</string>
     <string name="error_invalid_price">This price is invalid</string>
     <string name="error_invalid_place">This number of place is incorrect</string>
@@ -75,6 +76,7 @@
     <string name="insertCar">AÑADIR COCHE</string>
     <string name="deleteCar">BORRAR COCHE</string>
     <string name="insertImageCar">INSERTAR IMAGEN</string>
+    <string name="searchParking">Buscar</string>
     <string-array name="car_brand">
         <item>A15</item>
         <item>AUDI</item>
@@ -134,4 +136,5 @@
         <item>5</item>
         <item>6</item>
     </string-array>
+    <string name="title_activity_search_user">SearchUserActivity</string>
 </resources>

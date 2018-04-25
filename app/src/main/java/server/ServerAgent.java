@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,11 @@ import model.parsers.*;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static Constants.Constants.*;
 
 /**
  * Created by walid on 27/01/2018.
@@ -32,28 +36,7 @@ import org.json.JSONObject;
 
 public class ServerAgent {
 
-    public static final String USUARIOS_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/users";
-    public static final String ZONAS_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zonas";
-    public static final String LOGIN_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/user";
-    public static final String USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/userByMail";
-    public static final String FOTO_PATH = "http://10.0.2.2:8080/tfg/rest/";
-    public static final String UPDATEUSUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/update";
-    public static final String REGISTER_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/insert";
-    public static final String RUTA_INSERT_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/insertRoute";
-    public static final String RUTAS_FROM_ORIGIN_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routesOrigine";
-    public static final String RUTAS_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routes";
-    public static final String RUTASUSER_PATH = "http://10.0.2.2:8080/tfg/rest/RutaService/routesUser";
-    public static final String PARKINGS_PATH = "http://10.0.2.2:8080/tfg/rest/ParkingService/parking";
-    public static final String ZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/zona";
-    public static final String UPDATEZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/updateZone";
-    public static final String DESOCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/desocuppyZone";
-    public static final String USEROCUPPYZONA_PATH = "http://10.0.2.2:8080/tfg/rest/ZonaService/userOcuppyZone";
-    public static final String ANOUNCMENTDETAIL_PATH = "http://10.0.2.2:8080/tfg/rest/AnuncioService/anuncio";
-    public static final String USERCOMMENTS_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comments";
-    public static final String COMMENTSUSERCOMMENTED_PATH = "http://10.0.2.2:8080/tfg/rest/CommentService/comented";
-    public static final String DELETE_IMAGE_USUARIO_PATH = "http://10.0.2.2:8080/tfg/rest/UserService/deleteImage";
-    public static final String DELETE_CAR_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/deleteCar";
-    public static final String CAR_PATH = "http://10.0.2.2:8080/tfg/rest/CarService/car";
+
     //public static final String PATH = "http://10.0.2.2:8080/tfg/rest/";
 
     private Context context;
@@ -98,7 +81,6 @@ public class ServerAgent {
     }
 
     public List<Ruta> getRutasFromServer(Usuario usuario) throws IOException, NetworkException, JSONException {
-
         RestResponse response =  getResponseFromServer(RUTAS_PATH + "/" + usuario.getEmail());
         IParser parser = ParserFactory.newInstance()
                 .getRutaParser();
@@ -108,13 +90,12 @@ public class ServerAgent {
     }
 
     public List<Ruta> getUserRutasFromServer(String email) throws IOException, NetworkException, JSONException {
-        List<Ruta> rutas = null;
-        RestResponse response =  getResponseFromServer(RUTASUSER_PATH + "/" + email);
+        RestResponse response =  getResponseFromServer(RUTAS_USER_PATH + "/" + email);
         IParser parser = ParserFactory.newInstance()
                 .getRutaParser();
         String httpContent = response.getHttpContent();
         Log.d("Apua jsong", httpContent);
-        return rutas = (httpContent != null) ? parser.fromJson(httpContent) : null;
+        return (httpContent != null) ? parser.fromJson(httpContent) : null;
     }
 
     public Car getCarFromServer(String email) throws IOException, NetworkException, JSONException {
@@ -295,7 +276,7 @@ public class ServerAgent {
     public Usuario getUser(String email) throws IOException, NetworkException, JSONException {
 
         Usuario usuario = new Usuario();
-        RestResponse response = restHelper.get(context, USUARIO_PATH+"/"+email, null);
+        RestResponse response = restHelper.get(context, USUARIO_PATH + "/" + email, null);
         Log.d("Apua jsong", USUARIO_PATH);
 
         if (response.getHttpResponseCode() != 200) {
@@ -314,6 +295,39 @@ public class ServerAgent {
         return (Usuario) parser.getJsonObject(httpContent);
         //return usuario;
     }
+
+    public List<Usuario> getUserByFilter(String path) throws IOException, NetworkException, JSONException {
+
+        RestResponse response = restHelper.get(context, path, null);
+        List<Usuario> users = new ArrayList<>();
+        if (response.getHttpResponseCode() != 200 && response.getHttpResponseCode() != 404) {
+            throw new NetworkException(new StringBuilder()
+                    .append("HttpCode: ")
+                    .append(response.getHttpResponseCode())
+                    .append(" - ")
+                    .append(response.getHttpContent())
+                    .toString());
+        }
+        IParser parser = ParserFactory.newInstance()
+                .getUsuarioParser();
+
+        String httpContent = response.getHttpContent();
+        Log.d("Apua jsong content: ", httpContent);
+
+        try{
+            JSONArray jsonArray = new JSONArray(httpContent);
+            users = parser.fromJson(httpContent);
+        }catch(JSONException e){
+            try {
+                users.add((Usuario) parser.getJsonObject(httpContent));
+            }catch(JSONException ex){
+            }
+        }
+        return (httpContent != null) ? users : null;
+    }
+
+
+
 
    /* public List<Opinion> getOpinionesFromServer(int id) throws IOException, NetworkException, JSONException {
         // TODO
@@ -438,12 +452,7 @@ public class ServerAgent {
     }
 
     public boolean registryUsuario(String nombre, String apellido, String email, String password, String telefono, String edad, String descripcion) throws IOException, NetworkException {
-        // TODO
-        /*Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("correo", email)
-                .appendQueryParameter("contraseña", password);
-        String query = builder.build().getEncodedQuery();*/
-
+        
         Log.d("nombre",nombre);
         JSONObject json = new JSONObject();
         try {
