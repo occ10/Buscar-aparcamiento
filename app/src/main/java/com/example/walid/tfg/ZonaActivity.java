@@ -71,6 +71,7 @@ public class ZonaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(zonasList.size() > 0) {
             textview.setText("Elige zona para aparcar");
+            searchParkingButton.setText("APARCAR");
             spinner.setVisibility(View.VISIBLE);
             for (int i = 0; i < zonasList.size(); i++) {
 

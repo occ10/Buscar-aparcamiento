@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.Apua;
 import model.entities.Usuario;
@@ -280,8 +282,10 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        String regex = "^(.+)@(.+)(\\.\\S+)$";
+        Pattern pat = Pattern.compile(regex);
+        Matcher mat = pat.matcher(email);
+        return mat.matches();
     }
 
     private boolean isPasswordValid(String password) {
@@ -290,8 +294,10 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
     }
 
     private boolean isMobileValid(String phone) {
-        //TODO: Replace this with your own logic
-        return phone.length() > 6;
+        String regx = "[67]{1}\\d{8}";
+        Pattern pat = Pattern.compile(regx);
+        Matcher mat = pat.matcher(phone);
+        return mat.matches() && phone.length() == 9;
     }
     private boolean isAgeValid(String edad) {
         //TODO: Replace this with your own logic
@@ -430,6 +436,7 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
                     Log.d("Apua user:", usuario.getDescripcion());
                 }
             } catch (Exception e) {
+                cancel(true);
                 success = false;
                 Log.d("RUNNER", "Error trying to log. ", e);
             }
@@ -452,9 +459,19 @@ public class RegistryActivity extends AppCompatActivity implements LoaderManager
             } else {
                 showProgress(false);
                 Toast.makeText(RegistryActivity.this,
-                        "Error en el servidor, intentalo mas tarde.",
+                        "Ha habido un error, intentalo mas tarde.",
                         Toast.LENGTH_SHORT).show();
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            showProgress(false);
+            loadingTaskRegister = null;
+            Toast.makeText(RegistryActivity.this,
+                    "try mas later, an error has occured in the server",
+                    Toast.LENGTH_LONG).show();
+
         }
     }
 }

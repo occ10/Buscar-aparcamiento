@@ -172,7 +172,7 @@ public class SearchUserActivity extends AppCompatActivity implements View.OnClic
             List<Usuario> users = null;
             try {
                 users = apua.serverAgent.getUserByFilter(strings[0] + emailShared + "/" + filter);
-
+                Log.d("numero usuarios devueltos", String.valueOf(users.size()));
             } catch (Exception e) {
                 cancel(true);
                 Log.d("UNIVERSITY", "Error trying to get user.", e);

@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.Apua;
 import model.entities.Usuario;
@@ -226,8 +228,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        String regex = "^(.+)@(.+)(\\.\\S+)$";
+        Pattern pat = Pattern.compile(regex);
+        Matcher mat = pat.matcher(email);
+        return mat.matches();
     }
 
     private boolean isPasswordValid(String password) {
@@ -366,7 +370,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Intent intent = new Intent().setClass(
                             LoginActivity.this, MainActivity.class);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
-
                     editor.putString("usuario", usuario.getEmail());
                     editor.commit();
                     intent.putExtra("usuario", usuario);

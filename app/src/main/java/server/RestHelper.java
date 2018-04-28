@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -137,7 +138,7 @@ public class RestHelper {
         }
     }
 
-    public RestResponse insertImage(Context context, String url, Map<String, String> headers, String filaImage, String email)
+    public RestResponse insertImage(Context context, String url, Map<String, String> headers, String filaImage, String email, String fileName)
             throws IOException, NetworkException {
 
         if (!checkConnectivity(context)) {
@@ -147,7 +148,7 @@ public class RestHelper {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = getConnection(url, "PUT", headers);
-            writePutImage(urlConnection, filaImage, email);
+            writePutImage(urlConnection, filaImage, email, fileName);
             RestResponse response = connect(urlConnection);
             return response;
         } finally {
@@ -204,9 +205,9 @@ public class RestHelper {
         }
     }
 
-    private void writePutImage(HttpURLConnection urlConnection, String imageFile, String email) throws IOException {
+    private void writePutImage(HttpURLConnection urlConnection, String imageFile, String email, String fileName) throws IOException {
         DataOutputStream dos = null;
-        String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
+        //String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
         FileInputStream fileInputStream = new FileInputStream(new File(imageFile));
         String lineEnd = "\r\n";
         String twoHyphens = "--";

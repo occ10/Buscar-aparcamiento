@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import model.entities.Car;
 import model.entities.Comment;
@@ -485,7 +486,9 @@ public class ServerAgent {
 
     public boolean sendImage(String email, String imageFile, String imageService) throws IOException, NetworkException {
 
-        String fileName = imageFile.substring(imageFile.lastIndexOf("/")+1);
+        UUID uuid = UUID.randomUUID();
+        String randomUUIDString = uuid.toString();
+        randomUUIDString+= imageFile.substring(imageFile.lastIndexOf("."));
         String boundary = "*****";
 
         Map<String, String> headers= new HashMap<String, String>();
@@ -494,9 +497,9 @@ public class ServerAgent {
         headers.put("Connection", "Keep-Alive");
         headers.put("Cache-Control", "no-cache");
         headers.put("ENCTYPE", "multipart/form-data");
-        headers.put("uploaded_file", fileName);
+        headers.put("uploaded_file", randomUUIDString);
 
-        RestResponse response = restHelper.insertImage(context, FOTO_PATH + imageService + "/saveFile", headers, imageFile,email);
+        RestResponse response = restHelper.insertImage(context, FOTO_PATH + imageService + "/saveFile", headers, imageFile,email, randomUUIDString);
         if (response.getHttpResponseCode() == 400) {
             return false;
         }else if(response.getHttpResponseCode() != 200){
